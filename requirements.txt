@@ -1,0 +1,4 @@
+pypdf
+numpy
+faiss-cpu
+huggingface-hub
