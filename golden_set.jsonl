@@ -1,0 +1,12 @@
+{"id": "Q1", "question": "How much xanthan gum should I add to the gluten-free brioche dough?", "expected_chunk_id": null, "type": "exact_token_out_of_corpus"}
+{"id": "Q2", "question": "What unique spice flower and kapok buds are used in the Chettinad biryani?", "expected_chunk_id": "chunk_188", "type": "exact_token"}
+{"id": "Q3", "question": "How many minutes on High Pressure should I set the Instant Pot for cooking Bengal gram in sweet puran?", "expected_chunk_id": "chunk_498", "type": "exact_token"}
+{"id": "Q4", "question": "How much asafoetida resin is used for tempering in traditional South Indian sambar and rasam?", "expected_chunk_id": "chunk_24", "type": "exact_token"}
+{"id": "Q5", "question": "Why is the deep-fried chicken dish from Chennai named Chicken 65 according to popular belief?", "expected_chunk_id": "chunk_418", "type": "exact_token"}
+{"id": "Q6", "question": "How do you make Kodi Vepudu, the Andhra style dry chicken fry?", "expected_chunk_id": "chunk_414", "type": "semantic"}
+{"id": "Q7", "question": "What is the preparation and marination time for Eral Thokku prawn gravy?", "expected_chunk_id": "chunk_397", "type": "semantic"}
+{"id": "Q8", "question": "What whole spices are roasted to make the homemade Bisi Bele Bath powder?", "expected_chunk_id": "chunk_215", "type": "semantic"}
+{"id": "Q9", "question": "How do you prepare Ada Pradhaman using store-bought rice flakes and jaggery?", "expected_chunk_id": "chunk_483", "type": "semantic"}
+{"id": "Q10", "question": "What air fryer temperature and time should be used for cooking Goli Baje fritters?", "expected_chunk_id": null, "type": "exact_token_out_of_corpus"}
+{"id": "Q11", "question": "What is the ratio of raw rice to black lentils used in making Adai batter?", "expected_chunk_id": "chunk_140", "type": "exact_token"}
+{"id": "Q12", "question": "Which South Indian state is famous worldwide for inventing Mysore Pak sweet fudge?", "expected_chunk_id": "chunk_49", "type": "semantic"}

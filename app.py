@@ -1,9 +1,12 @@
 import os
+import re
 import pickle
 import argparse
 import time
 import faiss
 import numpy as np
+from sentence_transformers import SentenceTransformer
+from rank_bm25 import BM25Okapi
 
 from huggingface_hub import InferenceClient
 from hf_config import ensure_hf_token
@@ -29,8 +32,26 @@ EMBEDDING_MODEL = "sentence-transformers/all-MiniLM-L6-v2"
 GENERATION_MODEL = "Qwen/Qwen2.5-7B-Instruct"
 
 K = 3
-SIMILARITY_THRESHOLD = 0.30
+RRF_K = 60
+CANDIDATE_TOP_K = 25
+SIMILARITY_THRESHOLD = 0.0001
 FALLBACK_RESPONSE = "I could not find the answer in the document."
+
+
+# Global cache for sentence transformer model & BM25 index
+_embedding_model = None
+_bm25_index = None
+
+
+def get_embedding_model():
+    global _embedding_model
+    if _embedding_model is None:
+        _embedding_model = SentenceTransformer(EMBEDDING_MODEL)
+    return _embedding_model
+
+
+def tokenize(text):
+    return re.findall(r"\w+", text.lower())
 
 
 # ============================================================
@@ -54,13 +75,13 @@ def get_hf_client(token=None):
         print()
         print("  [HF API] InferenceClient initialized")
         print("  [HF API] Provider : Auto")
-        print("  [HF API] Status   : Connected ✓")
+        print("  [HF API] Status   : Connected [OK]")
 
     return _hf_client
 
 
 # ============================================================
-# LOAD FAISS & METADATA
+# LOAD FAISS & METADATA & BM25
 # ============================================================
 
 def load_faiss_index(index_file=FAISS_INDEX_FILE):
@@ -76,6 +97,7 @@ def load_faiss_index(index_file=FAISS_INDEX_FILE):
 
 
 def load_metadata(metadata_file=METADATA_FILE):
+    global _bm25_index
     if not os.path.exists(metadata_file):
         raise FileNotFoundError(
             f"\nMetadata file not found at {metadata_file}.\n"
@@ -87,90 +109,93 @@ def load_metadata(metadata_file=METADATA_FILE):
     print(f"  [metadata]  Total chunks   : {len(metadata['chunks'])}")
     print(f"  [metadata]  Chunk size     : {metadata.get('chunk_size', 'N/A')}")
     print(f"  [metadata]  Embedding model: {metadata.get('embedding_model', 'N/A')}")
+
+    if _bm25_index is None:
+        corpus_tokens = [tokenize(c["text"]) for c in metadata["chunks"]]
+        _bm25_index = BM25Okapi(corpus_tokens)
+        print("  [BM25]      BM25 Index     : Initialized [OK]")
+
     return metadata
 
 
 # ============================================================
-# EMBEDDING VIA HF INFERENCE API
+# EMBEDDING VIA LOCAL SENTENCE TRANSFORMER
 # ============================================================
 
 def create_question_embedding(question, client=None):
-    if client is None:
-        client = get_hf_client()
-
-    print()
-    print(f"  [HF API]  feature_extraction")
-    print(f"  [HF API]  Model    : {EMBEDDING_MODEL}")
-    print(f"  [HF API]  Input    : \"{question[:80]}{'...' if len(question) > 80 else ''}\"")
-
-    for attempt in range(5):
-        try:
-            start_t = time.time()
-            res = client.feature_extraction(
-                question,
-                model=EMBEDDING_MODEL
-            )
-            elapsed = time.time() - start_t
-
-            arr = np.array(res, dtype=np.float32)
-
-            # Handle different response shapes
-            if arr.ndim == 2:
-                arr = np.mean(arr, axis=0)
-            elif arr.ndim == 3:
-                arr = np.mean(arr, axis=(0, 1))
-
-            # Normalize
-            norm = np.linalg.norm(arr)
-            arr = arr / max(norm, 1e-12)
-
-            print(f"  [HF API]  Response : {arr.shape[0]}-dim vector  ({elapsed:.2f}s)  ✓")
-            return arr
-        except Exception as err:
-            print(f"  [HF API]  feature_extraction  RETRY {attempt+1}/5  Error: {err}")
-            time.sleep(3)
-
-    raise RuntimeError("Failed to get embedding from Hugging Face API after 5 retries.")
+    st_model = get_embedding_model()
+    emb = st_model.encode([question], normalize_embeddings=True)[0]
+    return np.array(emb, dtype=np.float32)
 
 
 # ============================================================
-# FAISS SEARCH
+# HYBRID RETRIEVAL (BM25 + RRF FUSION, k=60)
 # ============================================================
 
-def search_similar_chunks(question, index, metadata, k=K, client=None):
+def search_similar_chunks(question, index, metadata, k=K, client=None, rrf_k=RRF_K, candidate_k=CANDIDATE_TOP_K):
+    chunks = metadata["chunks"]
+    start_t = time.time()
+
+    # 1. Dense Retrieval (Top 25)
     question_embedding = create_question_embedding(question, client)
     query_vector = np.array([question_embedding], dtype=np.float32)
+    scores, indices = index.search(query_vector, min(candidate_k, index.ntotal))
 
-    actual_k = min(k, index.ntotal)
+    dense_ranks = {}
+    dense_scores = {}
+    for rank, idx in enumerate(indices[0]):
+        if idx != -1:
+            idx = int(idx)
+            cid = chunks[idx].get("chunk_id", f"chunk_{idx}")
+            dense_ranks[cid] = rank + 1
+            dense_scores[cid] = float(scores[0][rank])
 
-    print()
-    print(f"  [FAISS]  Similarity search")
-    print(f"  [FAISS]  Index type  : IndexFlatIP (Cosine Similarity)")
-    print(f"  [FAISS]  Top-K       : {actual_k}")
+    # 2. BM25 Retrieval (Top 25)
+    q_tokens = tokenize(question)
+    bm25_scores = _bm25_index.get_scores(q_tokens)
+    bm25_top_indices = np.argsort(bm25_scores)[::-1][:candidate_k]
 
-    start_t = time.time()
-    scores, indices = index.search(query_vector, actual_k)
+    bm25_ranks = {}
+    for rank, idx in enumerate(bm25_top_indices):
+        idx = int(idx)
+        cid = chunks[idx].get("chunk_id", f"chunk_{idx}")
+        bm25_ranks[cid] = rank + 1
+
+    # 3. Reciprocal Rank Fusion (RRF k=60)
+    all_cids = set(dense_ranks.keys()).union(set(bm25_ranks.keys()))
+    rrf_scores = {}
+    for cid in all_cids:
+        r_dense = dense_ranks.get(cid, None)
+        r_bm25 = bm25_ranks.get(cid, None)
+
+        score_dense = (1.0 / (rrf_k + r_dense)) if r_dense is not None else 0.0
+        score_bm25 = (1.0 / (rrf_k + r_bm25)) if r_bm25 is not None else 0.0
+        rrf_scores[cid] = score_dense + score_bm25
+
+    # 4. Rank candidates by RRF score
+    sorted_candidates = sorted(rrf_scores.items(), key=lambda x: x[1], reverse=True)[:k]
     elapsed = time.time() - start_t
 
-    print(f"  [FAISS]  Search time : {elapsed*1000:.1f}ms  ✓")
+    print()
+    print(f"  [HYBRID]  BM25 + RRF Fusion Search (k_rrf={rrf_k})")
+    print(f"  [HYBRID]  Candidates : Top-{candidate_k} Dense + Top-{candidate_k} BM25")
+    print(f"  [HYBRID]  Search time: {elapsed*1000:.1f}ms  [OK]")
 
-    chunks = metadata["chunks"]
+    chunk_map = {c.get("chunk_id", f"chunk_{i}"): (i, c) for i, c in enumerate(chunks)}
+
     results = []
-
-    for rank, vector_index in enumerate(indices[0]):
-        if vector_index == -1:
-            continue
-        vector_index = int(vector_index)
-        chunk = chunks[vector_index]
-
+    for rank, (cid, rrf_score) in enumerate(sorted_candidates, start=1):
+        vec_idx, chunk = chunk_map[cid]
         doc_name = chunk.get("doc_name", "the_essential_south_indianCookbook.pdf")
         pages = chunk.get("pages", [chunk.get("estimated_page", 1)])
         primary_page = chunk.get("estimated_page", pages[0] if pages else 1)
 
         results.append({
-            "rank": rank + 1,
-            "vector_index": vector_index,
-            "score": float(scores[0][rank]),
+            "rank": rank,
+            "chunk_id": cid,
+            "vector_index": vec_idx,
+            "score": float(rrf_score),
+            "dense_score": dense_scores.get(cid, 0.0),
             "text": chunk["text"],
             "doc_name": doc_name,
             "pages": pages,
@@ -245,7 +270,7 @@ def generate_answer(question, context, client=None):
 
             print(
                 f"  [HF API]  Response       : "
-                f"{len(answer)} chars ({elapsed:.2f}s) ✓"
+                f"{len(answer)} chars ({elapsed:.2f}s) [OK]"
             )
 
             return answer
@@ -278,17 +303,17 @@ def ask_question_rag(question, index_file=FAISS_INDEX_FILE, metadata_file=METADA
     print("-" * 60)
 
     print()
-    print("  STEP 1 : Loading vector store")
+    print("  STEP 1 : Loading vector store & BM25 index")
     index = load_faiss_index(index_file)
     metadata = load_metadata(metadata_file)
 
     print()
-    print("  STEP 2 : Embedding question via HF API")
+    print("  STEP 2 : Hybrid BM25 + RRF Search")
     results = search_similar_chunks(question, index, metadata, k=k, client=client)
 
     if not results:
         print()
-        print("  [result]  No matching chunks found in FAISS index.")
+        print("  [result]  No matching chunks found in index.")
         return {
             "answer": FALLBACK_RESPONSE,
             "sources": [],
@@ -300,12 +325,11 @@ def ask_question_rag(question, index_file=FAISS_INDEX_FILE, metadata_file=METADA
 
     print()
     print(f"  STEP 3 : Similarity threshold check")
-    print(f"  [threshold]  Max similarity score : {max_score:.4f}")
+    print(f"  [threshold]  Max RRF score        : {max_score:.6f}")
     print(f"  [threshold]  Threshold            : {similarity_threshold}")
 
-    # Similarity Threshold Guard
     if max_score < similarity_threshold:
-        print(f"  [threshold]  Result               : BELOW THRESHOLD — Out of domain")
+        print(f"  [threshold]  Result               : BELOW THRESHOLD -- Out of domain")
         print(f"  [threshold]  Action               : Returning fallback response")
         return {
             "answer": FALLBACK_RESPONSE,
@@ -315,14 +339,13 @@ def ask_question_rag(question, index_file=FAISS_INDEX_FILE, metadata_file=METADA
             "threshold_triggered": True
         }
 
-    print(f"  [threshold]  Result               : ABOVE THRESHOLD — Proceeding ✓")
+    print(f"  [threshold]  Result               : ABOVE THRESHOLD -- Proceeding [OK]")
 
     print()
     print("  STEP 4 : Generating answer via HF API")
     context = create_context(results)
     raw_answer = generate_answer(question, context, client)
 
-    # Check if model output indicates missing info
     print()
     print("  STEP 5 : Validating answer")
     lower_ans = raw_answer.lower()
@@ -338,7 +361,7 @@ def ask_question_rag(question, index_file=FAISS_INDEX_FILE, metadata_file=METADA
                 src_str = f"{r['doc_name']} (Page {p})"
                 if src_str not in sources:
                     sources.append(src_str)
-        print(f"  [validate]  Answer validated with {len(sources)} source(s) ✓")
+        print(f"  [validate]  Answer validated with {len(sources)} source(s) [OK]")
 
     return {
         "answer": answer,
@@ -351,36 +374,36 @@ def ask_question_rag(question, index_file=FAISS_INDEX_FILE, metadata_file=METADA
 
 def print_ask_results(question, response):
     print()
-    print("╔" + "=" * 58 + "╗")
-    print(f"║  QUESTION: {question[:46]}")
-    print("╚" + "=" * 58 + "╝")
+    print("+" + "=" * 58 + "+")
+    print(f"|  QUESTION: {question[:46]}")
+    print("+" + "=" * 58 + "+")
 
     print()
     print("  RETRIEVED CHUNKS (Top-K):")
     print("  " + "-" * 56)
     for res in response["results"]:
         pages_str = ", ".join([f"Page {p}" for p in res["pages"]])
-        print(f"  Rank {res['rank']}  |  Score: {res['score']:.4f}  |  {res['doc_name']} ({pages_str})")
+        print(f"  Rank {res['rank']}  |  RRF Score: {res['score']:.6f}  |  {res['doc_name']} ({pages_str})")
         snippet = res['text'][:120].replace('\n', ' ')
         print(f"           \"{snippet}...\"")
         print("  " + "-" * 56)
 
     print()
-    print("  ┌" + "─" * 56 + "┐")
-    print("  │  FINAL ANSWER                                        │")
-    print("  └" + "─" * 56 + "┘")
+    print("  +--" + "-" * 54 + "--+")
+    print("  |  FINAL ANSWER                                        |")
+    print("  +--" + "-" * 54 + "--+")
     print()
     print(f"  {response['answer']}")
 
     print()
-    print("  ┌" + "─" * 56 + "┐")
-    print("  │  SOURCE CITATIONS                                    │")
-    print("  └" + "─" * 56 + "┘")
+    print("  +--" + "-" * 54 + "--+")
+    print("  |  SOURCE CITATIONS                                    |")
+    print("  +--" + "-" * 54 + "--+")
     if response["sources"]:
         for src in response["sources"]:
-            print(f"    → {src}")
+            print(f"    -> {src}")
     else:
-        print("    (No source citations — Out of domain / Unanswered)")
+        print("    (No source citations -- Out of domain / Unanswered)")
     print()
 
 
@@ -389,7 +412,7 @@ def print_ask_results(question, response):
 # ============================================================
 
 def main():
-    parser = argparse.ArgumentParser(description="Ask questions to your documents using RAG (HF Inference API).")
+    parser = argparse.ArgumentParser(description="Ask questions to your documents using Hybrid RAG.")
     parser.add_argument("--question", type=str, help="Single question to answer")
     parser.add_argument("--index", type=str, default=FAISS_INDEX_FILE, help="FAISS index path")
     parser.add_argument("--metadata", type=str, default=METADATA_FILE, help="Metadata pkl path")
@@ -397,15 +420,14 @@ def main():
     args = parser.parse_args()
 
     print()
-    print("╔" + "=" * 58 + "╗")
-    print("║   ASK MY DOCUMENTS — RAG Application                   ║")
-    print("║   Powered by Hugging Face Inference API                 ║")
-    print("╚" + "=" * 58 + "╝")
+    print("+" + "=" * 58 + "+")
+    print("|   ASK MY DOCUMENTS -- HYBRID RAG APPLICATION           |")
+    print("|   Dense (all-MiniLM-L6-v2) + BM25 + RRF Fusion (k=60)  |")
+    print("+" + "=" * 58 + "+")
     print()
     print(f"  Embedding model   : {EMBEDDING_MODEL}")
     print(f"  Generation model  : {GENERATION_MODEL}")
     print(f"  Top-K retrieval   : {K}")
-    print(f"  Similarity cutoff : {SIMILARITY_THRESHOLD}")
     print(f"  FAISS index       : {args.index}")
     print(f"  Metadata          : {args.metadata}")
 

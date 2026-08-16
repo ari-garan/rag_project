@@ -73,7 +73,7 @@ def extract_pdf_text(pdf_file):
         })
 
     print(f"  [pypdf]  Pages with text : {non_empty}/{total_pages}")
-    print(f"  [pypdf]  Status          : Extraction complete ✓")
+    print(f"  [pypdf]  Status          : Extraction complete [OK]")
 
     return pages_data
 
@@ -135,6 +135,7 @@ def create_chunks(text, page_spans, chunk_size=CHUNK_SIZE, overlap=CHUNK_OVERLAP
     text_length = len(text)
     step = chunk_size - overlap
 
+    chunk_idx = 0
     while start < text_length:
         end = min(start + chunk_size, text_length)
         chunk_text = text[start:end].strip()
@@ -142,6 +143,7 @@ def create_chunks(text, page_spans, chunk_size=CHUNK_SIZE, overlap=CHUNK_OVERLAP
         if chunk_text:
             pages = get_pages_for_range(start, end, page_spans)
             chunks.append({
+                "chunk_id": f"chunk_{chunk_idx}",
                 "text": chunk_text,
                 "start": start,
                 "end": end,
@@ -149,77 +151,40 @@ def create_chunks(text, page_spans, chunk_size=CHUNK_SIZE, overlap=CHUNK_OVERLAP
                 "pages": pages,
                 "primary_page": pages[0] if pages else 1
             })
+            chunk_idx += 1
 
         start += step
 
     print(f"  [chunker]  Chunks created    : {len(chunks)}")
     print(f"  [chunker]  Page range        : Page 1 - Page {page_spans[-1]['page_number'] if page_spans else 1}")
-    print(f"  [chunker]  Status            : Chunking complete ✓")
+    print(f"  [chunker]  Status            : Chunking complete [OK]")
 
     return chunks
 
 
 # ============================================================
-# CREATE EMBEDDINGS VIA HUGGING FACE INFERENCE API
+# CREATE EMBEDDINGS VIA LOCAL SENTENCE TRANSFORMERS
 # ============================================================
 
 def create_embeddings_api(chunks, token=None, model_name=EMBEDDING_MODEL):
-    if not token:
-        token = ensure_hf_token()
+    from sentence_transformers import SentenceTransformer
+    print()
+    print("=" * 60)
+    print("  STEP 3 : EMBEDDING VIA LOCAL SENTENCE TRANSFORMERS")
+    print("=" * 60)
+    print(f"  Model         : {model_name}")
+    print(f"  Total chunks  : {len(chunks)}")
 
-    client = InferenceClient(token=token)
+    model = SentenceTransformer(model_name)
     texts = [chunk["text"] for chunk in chunks]
-
-    print()
-    print("=" * 60)
-    print("  STEP 3 : EMBEDDING VIA HUGGING FACE INFERENCE API")
-    print("=" * 60)
-    print(f"  [HF API]  Endpoint      : https://api-inference.huggingface.co")
-    print(f"  [HF API]  Model         : {model_name}")
-    print(f"  [HF API]  Pipeline      : feature_extraction")
-    print(f"  [HF API]  Total chunks  : {len(texts)}")
-    print(f"  [HF API]  Batch size    : {BATCH_SIZE}")
-    print()
-
-    embeddings = []
-    total_batches = (len(texts) + BATCH_SIZE - 1) // BATCH_SIZE
-
-    for i in range(0, len(texts), BATCH_SIZE):
-        batch = texts[i:i + BATCH_SIZE]
-        batch_num = i // BATCH_SIZE + 1
-
-        for attempt in range(5):
-            try:
-                start_t = time.time()
-                res = client.feature_extraction(batch, model=model_name)
-                elapsed = time.time() - start_t
-
-                arr = np.array(res, dtype=np.float32)
-
-                if arr.ndim == 3:
-                    arr = np.mean(arr, axis=1)
-                elif arr.ndim == 1:
-                    arr = np.expand_dims(arr, axis=0)
-
-                for vec in arr:
-                    norm = np.linalg.norm(vec)
-                    norm_vec = vec / max(norm, 1e-12)
-                    embeddings.append(norm_vec)
-
-                print(f"  [HF API]  feature_extraction  Batch {batch_num}/{total_batches}  "
-                      f"({len(batch)} chunks)  {elapsed:.2f}s  ✓")
-                break
-            except Exception as err:
-                print(f"  [HF API]  feature_extraction  Batch {batch_num}/{total_batches}  "
-                      f"RETRY {attempt+1}/5  Error: {err}")
-                time.sleep(3)
-
+    
+    embeddings = model.encode(texts, batch_size=32, show_progress_bar=True, normalize_embeddings=True)
     embeddings = np.array(embeddings, dtype=np.float32)
+
     print()
-    print(f"  [HF API]  Embedding shape    : {embeddings.shape}")
-    print(f"  [HF API]  Embedding dim      : {embeddings.shape[1]}")
-    print(f"  [HF API]  Total embedded     : {embeddings.shape[0]} chunks")
-    print(f"  [HF API]  Status             : Embedding complete ✓")
+    print(f"  Embedding shape    : {embeddings.shape}")
+    print(f"  Embedding dim      : {embeddings.shape[1]}")
+    print(f"  Status             : Embedding complete [OK]")
     return embeddings
 
 
@@ -241,7 +206,7 @@ def create_faiss_index(embeddings):
     index.add(embeddings)
 
     print(f"  [FAISS]  Vectors stored   : {index.ntotal}")
-    print(f"  [FAISS]  Status           : Index created ✓")
+    print(f"  [FAISS]  Status           : Index created [OK]")
 
     return index
 
@@ -273,6 +238,7 @@ def save_metadata(chunks, total_pages, total_text_length, metadata_file=METADATA
     metadata_chunks = []
     for chunk in chunks:
         metadata_chunks.append({
+            "chunk_id": chunk.get("chunk_id", ""),
             "text": chunk["text"],
             "start_position": chunk["start"],
             "end_position": chunk["end"],
@@ -303,7 +269,7 @@ def save_metadata(chunks, total_pages, total_text_length, metadata_file=METADATA
     print(f"  [metadata]  Chunk overlap   : {chunk_overlap}")
     print(f"  [metadata]  Embedding model : {EMBEDDING_MODEL}")
     print(f"  [metadata]  Embedding dim   : {dimension}")
-    print(f"  [metadata]  Status          : Metadata saved ✓")
+    print(f"  [metadata]  Status          : Metadata saved [OK]")
 
 
 # ============================================================
@@ -311,14 +277,11 @@ def save_metadata(chunks, total_pages, total_text_length, metadata_file=METADATA
 # ============================================================
 
 def build_vector_store(pdf_file=PDF_FILE, chunk_size=CHUNK_SIZE, chunk_overlap=CHUNK_OVERLAP, vector_store_dir=VECTOR_STORE_DIR, hf_token=None):
-    if not hf_token:
-        hf_token = ensure_hf_token()
-
     print()
-    print("╔" + "=" * 58 + "╗")
-    print("║   PDF TO VECTOR — RAG INGESTION PIPELINE                ║")
-    print("║   Mode: Hugging Face Inference API (No local models)    ║")
-    print("╚" + "=" * 58 + "╝")
+    print("+" + "=" * 58 + "+")
+    print("|   PDF TO VECTOR -- RAG INGESTION PIPELINE               |")
+    print("|   Mode: Local SentenceTransformers                      |")
+    print("+" + "=" * 58 + "+")
     print()
     print(f"  Config:")
     print(f"    PDF file       : {pdf_file}")
@@ -350,9 +313,9 @@ def build_vector_store(pdf_file=PDF_FILE, chunk_size=CHUNK_SIZE, chunk_overlap=C
     pipeline_time = time.time() - pipeline_start
 
     print()
-    print("╔" + "=" * 58 + "╗")
-    print("║   PIPELINE COMPLETED SUCCESSFULLY ✓                    ║")
-    print("╚" + "=" * 58 + "╝")
+    print("+" + "=" * 58 + "+")
+    print("|   PIPELINE COMPLETED SUCCESSFULLY                      |")
+    print("+" + "=" * 58 + "+")
     print(f"  Total time       : {pipeline_time:.1f}s")
     print(f"  Chunks created   : {len(chunks)}")
     print(f"  Vectors stored   : {index.ntotal}")
