@@ -2,3 +2,5 @@ pypdf
 numpy
 faiss-cpu
 huggingface-hub
+sentence-transformers
+rank-bm25
