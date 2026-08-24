@@ -63,6 +63,35 @@ python pdf_to_vector.py
 python app.py
 ```
 
+Every request is now recorded in `traces/requests.jsonl` with a UUID, prompt
+version and full prompt, retrieved chunk IDs/scores/text, model settings, raw
+model output, and final output. The trace file is intentionally ignored by Git
+because it can contain user questions and cookbook excerpts. Use
+`--no-trace` to turn this off, or `--trace-file path/to/file.jsonl` to change
+the location.
+
+### Week 5: error-analysis workflow
+
+Collect at least 20 genuine requests before analysing them—do not manufacture
+traces or substitute a hand-picked demo set. Then make a reproducible sample:
+
+```powershell
+python make_week5_sample.py --seed 20260824
+```
+
+This writes `week5/sample.json`, `week5/notes.md`, and `week5/taxonomy.md`.
+Read the selected traces and replace only the observation placeholders before
+creating categories. To replay the first selected trace from its saved prompt
+(without re-running retrieval), use:
+
+```powershell
+python replay_trace.py --trace-id YOUR_TRACE_ID
+```
+
+After you have open-coded and clustered the sample, write the dated,
+numbered prediction in `week5/notes.md` and commit it **before** changing the
+app to fix the chosen mode.
+
 ### 5. Run chunk size comparison
 
 ```powershell

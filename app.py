@@ -2,6 +2,9 @@ import os
 import pickle
 import argparse
 import time
+import json
+import uuid
+from datetime import datetime, timezone
 import faiss
 import numpy as np
 
@@ -31,6 +34,10 @@ GENERATION_MODEL = "Qwen/Qwen2.5-7B-Instruct"
 K = 3
 SIMILARITY_THRESHOLD = 0.30
 FALLBACK_RESPONSE = "I could not find the answer in the document."
+TRACE_SCHEMA_VERSION = "week5.trace.v1"
+PROMPT_VERSION = "recipe-rag-v1"
+GENERATION_PARAMS = {"max_tokens": 180, "temperature": 0.0}
+DEFAULT_TRACE_FILE = os.path.join("traces", "requests.jsonl")
 
 
 # ============================================================
@@ -208,6 +215,28 @@ QUESTION:
 ANSWER:"""
 
 
+def make_trace_chunk(result):
+    """Keep everything needed to inspect or reconstruct retrieved context."""
+    return {
+        "chunk_id": f"vector-{result['vector_index']}",
+        "rank": result["rank"],
+        "score": result["score"],
+        "text": result["text"],
+        "doc_name": result["doc_name"],
+        "pages": result["pages"],
+    }
+
+
+def append_trace(trace, trace_file=DEFAULT_TRACE_FILE):
+    """Append one complete, JSONL trace without logging secrets."""
+    trace_dir = os.path.dirname(trace_file)
+    if trace_dir:
+        os.makedirs(trace_dir, exist_ok=True)
+    with open(trace_file, "a", encoding="utf-8") as file:
+        file.write(json.dumps(trace, ensure_ascii=False) + "\n")
+    print(f"  [trace]   Saved trace      : {trace['trace_id']} -> {trace_file}")
+
+
 # ============================================================
 # GENERATE ANSWER VIA HF INFERENCE API
 # ============================================================
@@ -221,7 +250,8 @@ def generate_answer(question, context, client=None):
     print()
     print("  [HF API]  chat_completion")
     print(f"  [HF API]  Model          : {GENERATION_MODEL}")
-    print("  [HF API]  Max new tokens : 180")
+    print(f"  [HF API]  Max new tokens : {GENERATION_PARAMS['max_tokens']}")
+    print(f"  [HF API]  Temperature    : {GENERATION_PARAMS['temperature']}")
     print(f"  [HF API]  Prompt length  : {len(prompt)} chars")
 
     for attempt in range(5):
@@ -236,7 +266,7 @@ def generate_answer(question, context, client=None):
                         "content": prompt
                     }
                 ],
-                max_tokens=180
+                **GENERATION_PARAMS
             )
 
             elapsed = time.time() - start_t
@@ -269,7 +299,9 @@ def generate_answer(question, context, client=None):
 # MAIN RAG ANSWER LOGIC
 # ============================================================
 
-def ask_question_rag(question, index_file=FAISS_INDEX_FILE, metadata_file=METADATA_FILE, k=K, similarity_threshold=SIMILARITY_THRESHOLD, hf_token=None):
+def ask_question_rag(question, index_file=FAISS_INDEX_FILE, metadata_file=METADATA_FILE,
+                     k=K, similarity_threshold=SIMILARITY_THRESHOLD, hf_token=None,
+                     trace_file=DEFAULT_TRACE_FILE):
     client = get_hf_client(hf_token)
 
     print()
@@ -289,12 +321,27 @@ def ask_question_rag(question, index_file=FAISS_INDEX_FILE, metadata_file=METADA
     if not results:
         print()
         print("  [result]  No matching chunks found in FAISS index.")
-        return {
+        response = {
             "answer": FALLBACK_RESPONSE,
             "sources": [],
             "max_score": 0.0,
             "results": []
         }
+        if trace_file:
+            append_trace({
+                "schema_version": TRACE_SCHEMA_VERSION,
+                "trace_id": str(uuid.uuid4()),
+                "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+                "question": question,
+                "prompt_version": PROMPT_VERSION,
+                "prompt": None,
+                "retrieved_chunks": [],
+                "generation": {"model": GENERATION_MODEL, "params": GENERATION_PARAMS},
+                "raw_output": None,
+                "final_output": response["answer"],
+                "threshold": {"value": similarity_threshold, "max_score": 0.0, "triggered": False},
+            }, trace_file)
+        return response
 
     max_score = max(r["score"] for r in results)
 
@@ -307,19 +354,35 @@ def ask_question_rag(question, index_file=FAISS_INDEX_FILE, metadata_file=METADA
     if max_score < similarity_threshold:
         print(f"  [threshold]  Result               : BELOW THRESHOLD — Out of domain")
         print(f"  [threshold]  Action               : Returning fallback response")
-        return {
+        response = {
             "answer": FALLBACK_RESPONSE,
             "sources": [],
             "max_score": max_score,
             "results": results,
             "threshold_triggered": True
         }
+        if trace_file:
+            append_trace({
+                "schema_version": TRACE_SCHEMA_VERSION,
+                "trace_id": str(uuid.uuid4()),
+                "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+                "question": question,
+                "prompt_version": PROMPT_VERSION,
+                "prompt": None,
+                "retrieved_chunks": [make_trace_chunk(r) for r in results],
+                "generation": {"model": GENERATION_MODEL, "params": GENERATION_PARAMS},
+                "raw_output": None,
+                "final_output": response["answer"],
+                "threshold": {"value": similarity_threshold, "max_score": max_score, "triggered": True},
+            }, trace_file)
+        return response
 
     print(f"  [threshold]  Result               : ABOVE THRESHOLD — Proceeding ✓")
 
     print()
     print("  STEP 4 : Generating answer via HF API")
     context = create_context(results)
+    prompt = create_prompt(question, context)
     raw_answer = generate_answer(question, context, client)
 
     # Check if model output indicates missing info
@@ -340,13 +403,28 @@ def ask_question_rag(question, index_file=FAISS_INDEX_FILE, metadata_file=METADA
                     sources.append(src_str)
         print(f"  [validate]  Answer validated with {len(sources)} source(s) ✓")
 
-    return {
+    response = {
         "answer": answer,
         "sources": sources,
         "max_score": max_score,
         "results": results,
         "threshold_triggered": False
     }
+    if trace_file:
+        append_trace({
+            "schema_version": TRACE_SCHEMA_VERSION,
+            "trace_id": str(uuid.uuid4()),
+            "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+            "question": question,
+            "prompt_version": PROMPT_VERSION,
+            "prompt": prompt,
+            "retrieved_chunks": [make_trace_chunk(r) for r in results],
+            "generation": {"model": GENERATION_MODEL, "params": GENERATION_PARAMS},
+            "raw_output": raw_answer,
+            "final_output": response["answer"],
+            "threshold": {"value": similarity_threshold, "max_score": max_score, "triggered": False},
+        }, trace_file)
+    return response
 
 
 def print_ask_results(question, response):
@@ -394,6 +472,9 @@ def main():
     parser.add_argument("--index", type=str, default=FAISS_INDEX_FILE, help="FAISS index path")
     parser.add_argument("--metadata", type=str, default=METADATA_FILE, help="Metadata pkl path")
     parser.add_argument("--token", type=str, default=None, help="Hugging Face API Token")
+    parser.add_argument("--trace-file", type=str, default=DEFAULT_TRACE_FILE,
+                        help="JSONL trace destination (use --no-trace to disable)")
+    parser.add_argument("--no-trace", action="store_true", help="Do not persist request traces")
     args = parser.parse_args()
 
     print()
@@ -410,7 +491,9 @@ def main():
     print(f"  Metadata          : {args.metadata}")
 
     if args.question:
-        res = ask_question_rag(args.question, index_file=args.index, metadata_file=args.metadata, hf_token=args.token)
+        res = ask_question_rag(args.question, index_file=args.index, metadata_file=args.metadata,
+                               hf_token=args.token,
+                               trace_file=None if args.no_trace else args.trace_file)
         print_ask_results(args.question, res)
         return
 
@@ -433,7 +516,9 @@ def main():
             break
 
         try:
-            res = ask_question_rag(question, index_file=args.index, metadata_file=args.metadata, hf_token=args.token)
+            res = ask_question_rag(question, index_file=args.index, metadata_file=args.metadata,
+                                   hf_token=args.token,
+                                   trace_file=None if args.no_trace else args.trace_file)
             print_ask_results(question, res)
         except Exception as error:
             print(f"\n  ERROR: {error}")
