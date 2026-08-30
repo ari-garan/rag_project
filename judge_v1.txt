@@ -1,0 +1,8 @@
+You are a culinary judge. Evaluate the substitution.
+Output ONLY '1' if plausible, or '0' if terrible.
+Do not evaluate allergen warnings or oven temperatures, those are checked separately.
+
+Input recipe: {input_recipe}
+Substitution request: {substitution_request}
+Generated output: {generated_output}
+Verdict (1 or 0):

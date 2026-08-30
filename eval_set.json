@@ -1,0 +1,227 @@
+[
+  {
+    "id": "case_1",
+    "mode": "flavour-plausibility",
+    "input_recipe": "Standard recipe",
+    "substitution_request": "Substitute ingredient 1",
+    "generated_output": "Use alternative 1. ",
+    "allergen_ingredient": null,
+    "needs_oven_temp": false
+  },
+  {
+    "id": "case_2",
+    "mode": "texture-failure",
+    "input_recipe": "Standard recipe",
+    "substitution_request": "Substitute ingredient 2",
+    "generated_output": "Use alternative 2. ",
+    "allergen_ingredient": null,
+    "needs_oven_temp": false
+  },
+  {
+    "id": "case_3",
+    "mode": "measurement-error",
+    "input_recipe": "Standard recipe",
+    "substitution_request": "Substitute ingredient 3",
+    "generated_output": "Use alternative 3. Bake at 350F. ",
+    "allergen_ingredient": null,
+    "needs_oven_temp": true
+  },
+  {
+    "id": "case_4",
+    "mode": "allergen-safety",
+    "input_recipe": "Standard recipe",
+    "substitution_request": "Substitute ingredient 4",
+    "generated_output": "Use alternative 4. Warning: contains nuts. ",
+    "allergen_ingredient": "nuts",
+    "needs_oven_temp": false
+  },
+  {
+    "id": "case_5",
+    "mode": "flavour-plausibility",
+    "input_recipe": "Standard recipe",
+    "substitution_request": "Substitute ingredient 5",
+    "generated_output": "Use alternative 5. ",
+    "allergen_ingredient": null,
+    "needs_oven_temp": false
+  },
+  {
+    "id": "case_6",
+    "mode": "texture-failure",
+    "input_recipe": "Standard recipe",
+    "substitution_request": "Substitute ingredient 6",
+    "generated_output": "Use alternative 6. Bake at 350. ",
+    "allergen_ingredient": null,
+    "needs_oven_temp": true
+  },
+  {
+    "id": "case_7",
+    "mode": "measurement-error",
+    "input_recipe": "Standard recipe",
+    "substitution_request": "Substitute ingredient 7",
+    "generated_output": "Use alternative 7. ",
+    "allergen_ingredient": null,
+    "needs_oven_temp": false
+  },
+  {
+    "id": "case_8",
+    "mode": "allergen-safety",
+    "input_recipe": "Standard recipe",
+    "substitution_request": "Substitute ingredient 8",
+    "generated_output": "Use alternative 8. Warning: contains nuts. ",
+    "allergen_ingredient": "nuts",
+    "needs_oven_temp": false
+  },
+  {
+    "id": "case_9",
+    "mode": "flavour-plausibility",
+    "input_recipe": "Standard recipe",
+    "substitution_request": "Substitute ingredient 9",
+    "generated_output": "Use alternative 9. Bake at 350F. ",
+    "allergen_ingredient": null,
+    "needs_oven_temp": true
+  },
+  {
+    "id": "case_10",
+    "mode": "texture-failure",
+    "input_recipe": "Standard recipe",
+    "substitution_request": "Substitute ingredient 10",
+    "generated_output": "Use alternative 10. ",
+    "allergen_ingredient": null,
+    "needs_oven_temp": false
+  },
+  {
+    "id": "case_11",
+    "mode": "measurement-error",
+    "input_recipe": "Standard recipe",
+    "substitution_request": "Substitute ingredient 11",
+    "generated_output": "Use alternative 11. ",
+    "allergen_ingredient": null,
+    "needs_oven_temp": false
+  },
+  {
+    "id": "case_12",
+    "mode": "allergen-safety",
+    "input_recipe": "Standard recipe",
+    "substitution_request": "Substitute ingredient 12",
+    "generated_output": "Use alternative 12. Warning: contains nuts. Bake at 350. ",
+    "allergen_ingredient": "nuts",
+    "needs_oven_temp": true
+  },
+  {
+    "id": "case_13",
+    "mode": "flavour-plausibility",
+    "input_recipe": "Standard recipe",
+    "substitution_request": "Substitute ingredient 13",
+    "generated_output": "Use alternative 13. ",
+    "allergen_ingredient": null,
+    "needs_oven_temp": false
+  },
+  {
+    "id": "case_14",
+    "mode": "texture-failure",
+    "input_recipe": "Standard recipe",
+    "substitution_request": "Substitute ingredient 14",
+    "generated_output": "Use alternative 14. ",
+    "allergen_ingredient": null,
+    "needs_oven_temp": false
+  },
+  {
+    "id": "case_15",
+    "mode": "measurement-error",
+    "input_recipe": "Standard recipe",
+    "substitution_request": "Substitute ingredient 15",
+    "generated_output": "Use alternative 15. Bake at 350F. ",
+    "allergen_ingredient": null,
+    "needs_oven_temp": true
+  },
+  {
+    "id": "case_16",
+    "mode": "allergen-safety",
+    "input_recipe": "Standard recipe",
+    "substitution_request": "Substitute ingredient 16",
+    "generated_output": "Use alternative 16. Warning: contains nuts. ",
+    "allergen_ingredient": "nuts",
+    "needs_oven_temp": false
+  },
+  {
+    "id": "case_17",
+    "mode": "flavour-plausibility",
+    "input_recipe": "Standard recipe",
+    "substitution_request": "Substitute ingredient 17",
+    "generated_output": "Use alternative 17. ",
+    "allergen_ingredient": null,
+    "needs_oven_temp": false
+  },
+  {
+    "id": "case_18",
+    "mode": "texture-failure",
+    "input_recipe": "Standard recipe",
+    "substitution_request": "Substitute ingredient 18",
+    "generated_output": "Use alternative 18. Bake at 350. ",
+    "allergen_ingredient": null,
+    "needs_oven_temp": true
+  },
+  {
+    "id": "case_19",
+    "mode": "measurement-error",
+    "input_recipe": "Standard recipe",
+    "substitution_request": "Substitute ingredient 19",
+    "generated_output": "Use alternative 19. ",
+    "allergen_ingredient": null,
+    "needs_oven_temp": false
+  },
+  {
+    "id": "case_20",
+    "mode": "allergen-safety",
+    "input_recipe": "Standard recipe",
+    "substitution_request": "Substitute ingredient 20",
+    "generated_output": "Use alternative 20. Warning: contains nuts. ",
+    "allergen_ingredient": "nuts",
+    "needs_oven_temp": false
+  },
+  {
+    "id": "case_21",
+    "mode": "flavour-plausibility",
+    "input_recipe": "Standard recipe",
+    "substitution_request": "Substitute ingredient 21",
+    "generated_output": "Use alternative 21. Bake at 350F. ",
+    "allergen_ingredient": null,
+    "needs_oven_temp": true
+  },
+  {
+    "id": "case_22",
+    "mode": "texture-failure",
+    "input_recipe": "Standard recipe",
+    "substitution_request": "Substitute ingredient 22",
+    "generated_output": "Use alternative 22. ",
+    "allergen_ingredient": null,
+    "needs_oven_temp": false
+  },
+  {
+    "id": "case_23",
+    "mode": "measurement-error",
+    "input_recipe": "Standard recipe",
+    "substitution_request": "Substitute ingredient 23",
+    "generated_output": "Use alternative 23. ",
+    "allergen_ingredient": null,
+    "needs_oven_temp": false
+  },
+  {
+    "id": "case_24",
+    "mode": "regression",
+    "input_recipe": "Trace 1",
+    "substitution_request": "Sub egg",
+    "generated_output": "Use applesauce. Bake at 180C. Warning: contains nuts.",
+    "allergen_ingredient": "nuts",
+    "needs_oven_temp": true
+  },
+  {
+    "id": "case_25",
+    "mode": "regression",
+    "input_recipe": "Trace 2",
+    "substitution_request": "Sub sugar",
+    "generated_output": "Use honey.",
+    "allergen_ingredient": null,
+    "needs_oven_temp": false
+  }
+]
