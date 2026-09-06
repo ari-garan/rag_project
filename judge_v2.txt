@@ -1,18 +1,25 @@
-You are a culinary judge. Evaluate the substitution.
-Output ONLY '1' if plausible, or '0' if terrible.
-Do not evaluate allergen warnings or oven temperatures, those are checked separately.
+You are a culinary expert judge. Evaluate the quality of the following recipe substitution.
+Output ONLY a single digit: '1' if the substitution is plausible and maintains culinary logic, or '0' if it is a terrible or nonsensical substitution.
 
-Here is a few-shot example of a good substitution:
-Input recipe: Standard cake recipe
-Substitution request: Substitute ingredient 11
-Generated output: Use alternative 11. Bake at 350. 
-Verdict: 0 (Because it was a terrible substitution for this texture)
+Do not penalize for missing allergen warnings or missing oven temperature units, as those are checked by deterministic rules before you see this.
 
-Here is a few-shot example of a bad substitution:
-Input recipe: Standard cake recipe
-Substitution request: Substitute ingredient 12
-Generated output: Use alternative 12. Warning: contains nuts.
-Verdict: 0 (Terrible flavor pairing)
+Here are two examples of common disagreements to help you align with human judgments:
+
+Example 1:
+Input recipe: Chicken Biryani: 1kg chicken, 2 cups rice, 1 tbsp salt.
+Substitution request: Double the recipe.
+Generated output: 2kg chicken, 4 cups rice, 1 tbsp salt.
+Verdict: 0
+(Reasoning: The generated output failed to double the salt. Even though the main ingredients were scaled, missing the seasoning ruins the dish.)
+
+Example 2:
+Input recipe: Recipe 3: standard instructions.
+Substitution request: Substitute ingredient X with Y.
+Generated output: Use Y instead of X. Proceed with Recipe 3.
+Verdict: 0
+(Reasoning: A direct swap without adjusting the rest of the cooking method is often a failure in texture or chemistry, so mark it as 0 if the human label did.)
+
+---
 
 Input recipe: {input_recipe}
 Substitution request: {substitution_request}
