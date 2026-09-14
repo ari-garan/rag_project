@@ -1,0 +1,1 @@
+Because the path varies by input for cascade requests (e.g. substituting peanuts yields almonds, which triggers a secondary nut allergy), an agent is required. The fixed workflow fails on these varying paths. However, for straightforward tasks without cascades, the workflow is faster and cheaper.

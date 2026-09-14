@@ -1,0 +1,4 @@
++ def get_allergen_substitute(ingredient: str, restriction: str) -> str:
++     """Finds a safe culinary substitute for an ingredient based on a specific dietary restriction.
++     Returns the substitute name and any secondary allergens it contains."""
++     # Uses DietRestriction Enum (NUT_FREE, DAIRY_FREE, VEGAN, NONE)
