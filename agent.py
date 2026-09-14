@@ -1,5 +1,5 @@
 import time
-from tools import search_recipes, scale_ingredients, get_allergen_substitute
+from tools import search_recipes, scale_ingredients, get_allergen_substitute, DietRestriction
 
 MAX_ITERATIONS = 5
 MAX_TOKENS = 2000
@@ -43,7 +43,7 @@ def run_agent(recipe_name, servings, allergen, diet, force_budget_fail=False):
             else:
                 state = "done"
         elif state == "swap":
-            sub = get_allergen_substitute(current_allergen, diet)
+            sub = get_allergen_substitute(current_allergen, DietRestriction(diet))
             if "Warning" in sub:
                 current_allergen = sub.split()[0] # cascade
             else:
@@ -53,3 +53,8 @@ def run_agent(recipe_name, servings, allergen, diet, force_budget_fail=False):
             break
             
     return current_recipe, tokens, tokens * 0.0001, time.time() - start, "SUCCESS"
+
+if __name__ == "__main__":
+    # Test run to make the agent runnable by one command
+    res, tok, cost, lat, status = run_agent("Thai Curry", 4, "peanuts", "nut_free")
+    print(f"Agent Result: {res}\nTokens: {tok}, Cost: ${cost:.4f}, Latency: {lat:.3f}s, Status: {status}")

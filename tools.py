@@ -14,11 +14,11 @@ def scale_ingredients(recipe_text: str, target_servings: int) -> str:
     """Scales the quantities in the recipe."""
     return f"Scaled {target_servings}x: {recipe_text}"
 
-def get_allergen_substitute(ingredient: str, restriction: str) -> str:
+def get_allergen_substitute(ingredient: str, restriction: DietRestriction) -> str:
     """Finds a safe culinary substitute for an ingredient based on a specific dietary restriction.
     Returns the substitute name and any secondary allergens it contains."""
-    if ingredient == "peanuts" and restriction == DietRestriction.NUT_FREE.value:
+    if ingredient == "peanuts" and restriction == DietRestriction.NUT_FREE:
         return "almonds (Warning: contains tree nuts)"
-    if ingredient == "almonds" and restriction == DietRestriction.NUT_FREE.value:
+    if ingredient == "almonds" and restriction == DietRestriction.NUT_FREE:
         return "sunflower seeds (Safe)"
     return f"safe_substitute_for_{ingredient}"
