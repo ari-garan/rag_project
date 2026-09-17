@@ -1,0 +1,3 @@
+System,Pass Rate,p50 Latency (s),Total Tokens,Total Cost ($)
+Fixed Workflow,70%,1.50,1500,$0.0010
+ReAct Agent,100%,1.50,17750,$0.0820
