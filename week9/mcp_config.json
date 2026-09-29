@@ -1,0 +1,12 @@
+{
+  "servers": {
+    "recipe_server": {
+      "command": "python",
+      "args": ["recipe_server.py"]
+    },
+    "ingredient_server": {
+      "command": "python",
+      "args": ["ingredient_server.py"]
+    }
+  }
+}
