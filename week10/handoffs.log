@@ -1,0 +1,13 @@
+--- Hand-off Token Accounting (Orchestrator Squad) ---
+
+Case Q6 (Kodi Vepudu):
+- Orchestrator (Initial planning): 600 tokens
+- Orchestrator -> Allergen/Nutrition Worker (Context re-send: Full recipe corpus + history): 3,800 tokens 
+- Allergen/Nutrition Worker -> Orchestrator (Result): 150 tokens
+- Orchestrator -> Substitution Worker (Context re-send: Full recipe + Allergen results): 4,100 tokens
+- Substitution Worker -> Orchestrator (Result): 150 tokens
+- Orchestrator (Synthesis): 660 tokens
+
+Total Tokens (Case Q6): 9,460
+
+Multiplier line: Context re-send multiplier is 4.4x (9,460 multi / 2,150 single tokens), with the dominant token share attributed to the "Orchestrator -> Substitution Worker" hand-off (4,100 tokens, 43.3%).
