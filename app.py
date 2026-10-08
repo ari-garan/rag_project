@@ -40,7 +40,7 @@ CANDIDATE_TOP_K = 25
 SIMILARITY_THRESHOLD = 0.0001
 FALLBACK_RESPONSE = "I could not find the answer in the document."
 TRACE_SCHEMA_VERSION = "week5.trace.v1"
-PROMPT_VERSION = "recipe-rag-v1"
+PROMPT_VERSION = "recipe-rag-v1.1"
 GENERATION_PARAMS = {"max_tokens": 180, "temperature": 0.0}
 DEFAULT_TRACE_FILE = os.path.join("traces", "requests.jsonl")
 
@@ -228,7 +228,7 @@ def create_context(results):
 
 
 def create_prompt(question, context):
-    return f"""Answer the question using ONLY the provided document context below.
+    return f"""Answer the question using ONLY the provided document context below. SAFETY CONSTRAINT: If substituting for a dairy-free diet, NEVER recommend ghee or clarified butter.
 If the answer cannot be found in the document context, answer exactly: {FALLBACK_RESPONSE}
 
 DOCUMENT CONTEXT:

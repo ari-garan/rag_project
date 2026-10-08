@@ -1,0 +1,22 @@
+{
+  "trace_id": "req-998f4-2026",
+  "timestamp_utc": "2026-10-02T14:22:10Z",
+  "prompt_version": "v1.4.2",
+  "question": "I want to make a dairy-free Mysore Pak. What can I use instead of regular butter?",
+  "spans": {
+    "retrieval": {
+      "latency_ms": 320,
+      "cost": 0.0,
+      "retrieved_context_ids": ["chunk_305", "chunk_109"]
+    },
+    "generation": {
+      "latency_ms": 1150,
+      "input_tokens": 1205,
+      "output_tokens": 45,
+      "cost": 0.0018
+    }
+  },
+  "total_latency_ms": 1470,
+  "total_cost": 0.0018,
+  "final_output": "For a dairy-free Mysore Pak, you can safely substitute the regular butter with ghee, which provides the traditional authentic flavor!"
+}
