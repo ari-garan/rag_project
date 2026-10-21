@@ -1,116 +1,87 @@
-# Hugging Face Inference API + FAISS RAG ("Ask My Documents")
+# Pantry-to-Plate Assistant (Week 12 Capstone - Variant B)
 
-## Topic B: Recipes & Food
-
-A complete Retrieval-Augmented Generation system using the **Hugging Face Inference API** (no local model downloads).
-
-### Tech Stack
-- **PyPDF** — PDF text extraction
-- **Hugging Face Inference API** — Embeddings (`all-MiniLM-L6-v2`) & Text Generation (`flan-t5-base`)
-- **FAISS** — Vector similarity search
-- **NumPy** — Array operations
-
-### Key Feature: No local model downloads!
-All model inference runs via **Hugging Face API calls** using your free HF_TOKEN.
+> **M6 Capstone Portfolio Piece:** A production-grade, observable culinary assistant combining 11 weeks of RAG, hand-built agent loops, live Model Context Protocol (MCP) tool discovery, exact-match allergen safety, and per-request span logging.
 
 ---
 
-## Project Structure
+## Quickstart: Stranger Guide (Zero to Working Answer in One Command)
+
+No complex environment setup or external GPU required. Run with standard Python:
+
+### 1. Run the Live 4-Part Summit Demo (Recommended for Evaluation)
+```powershell
+python main.py --demo
+```
+*Delivers the complete four-part summit presentation live to the clock: Real Run -> Failures Found -> A Number That Moved -> 10x Scale Plan.*
+
+### 2. Run the Full 30-Case Integrated Evaluation Suite
+```powershell
+python main.py --eval
+```
+*Executes all 30 deterministic assertions and LLM Judge evaluations across 6 categories in ~5 seconds.*
+
+### 3. Ask a Custom Cooking / Pantry Question
+```powershell
+python main.py --query "I have flour, butter, and sugar. Can I make traditional shortbread?" --allergy "nuts" --servings 8
+```
+
+### 4. Interactive Pantry Mode
+```powershell
+python main.py
+```
+
+---
+
+## Capstone Artifacts & Submission Checklist (`week12/`)
+
+All capstone deliverables required by the M6 House Rubric are located in [`week12/`](week12/):
+
+| Deliverable File | Description & Rubric Evidence |
+| :--- | :--- |
+| **[`main.py`](main.py)** | **Single Entry Point:** Runs app, eval suite, and 4-part demo from one command. |
+| **[`week12/seams.md`](week12/seams.md)** | **Tuesday's Unedited Seam List:** 8 integration seams audit marked fixed, accepted, or deferred. |
+| **[`week12/architecture.md`](week12/architecture.md)** | **One-Page Architecture Sketch:** Mermaid flowchart, host LLM isolation, and cost breakdown per span. |
+| **[`week12/eval_report.md`](week12/eval_report.md)** | **Eval Suite Output:** 30 cases (100% pass), n=80 reformulation drop (32.5% -> 0.0%), 100% judge agreement, stated non-coverage. |
+| **[`week12/weaknesses.md`](week12/weaknesses.md)** | **Top 3 Known Weaknesses:** Dated Wednesday, unprompted (synonym blindness, stdio concurrency, long-tail swaps). |
+| **[`week12/demo_script.md`](week12/demo_script.md)** | **10-Minute Demo Script:** Four-part standard script + answers to all 5 hostile panel questions. |
+| **[`week12/error_taxonomy.md`](week12/error_taxonomy.md)** | **Re-Scored Error Taxonomy:** 6 ranked modes with trace IDs; includes NEW integration mode ('Sub-recipe Version Collision'). |
+| **[`week12/trajectory_eval.md`](week12/trajectory_eval.md)** | **Trajectory Evaluation:** 12 cases, tool-choice accuracy 91.7%, outcome-vs-trajectory gap 16.7% (2 right-answer-wrong-path traces). |
+| **[`week12/trace.json`](week12/trace.json)** | **End-to-End Trace:** Single `trace_id` intact across agent and MCP hops, latency/cost per span, PII health data hashed. |
+| **[`week12/tenx_plan.md`](week12/tenx_plan.md)** | **10x Engineering Plan:** $0.00210 cost/query ($105/day @ 50k); identifies LLM concurrency limits breaking first at 500k queries/day. |
+| **[`week12/fresh_eyes.md`](week12/fresh_eyes.md)** | **Fresh-Eyes Review Note:** External squad review (Jordan Chen, Squad C), where they stumbled, and changes made. |
+| **[`week12/bonus_substitution_eval.md`](week12/bonus_substitution_eval.md)** | **Bonus Challenge:** Allergen safety through substitution chain; red before, green after on secondary allergen introduction. |
+
+---
+
+## Core System Architecture
 
 ```text
-rag_project/
-├── input/
-│   └── the_essential_south_indianCookbook.pdf
-├── vector_store/
-│   ├── faiss_index.bin
-│   └── metadata.pkl
-├── hf_config.py           # HF API Token management (.env or prompt)
-├── pdf_to_vector.py       # PDF ingestion & embedding via HF API
-├── app.py                 # RAG query app via HF API
-├── evaluate_chunking.py   # Chunk size comparison tool
-├── test_rag.py            # Automated end-to-end test suite
-├── requirements.txt
-└── README.md
+[User Query + Allergy]
+       │
+       ▼
+ [main.py Gateway] ───► [Host Agent Orchestrator] ◄──► [MCP Recipe & Safety Server]
+                             │                                 ├── search_recipe_library
+                             │ (Single trace_id surviving)     ├── check_allergen_field (EXACT-MATCH)
+                             │                                 ├── scale_recipe_batch (Invariant cook time)
+                             │                                 ├── get_safe_internal_temp (74°C poultry)
+                             │                                 └── get_kitchen_substitution
+                             ▼
+               [Deterministic Assertion Engine]
+                    ├── Unsafe ──► Immediate Safety Refusal (Zero Token Waste)
+                    └── Safe   ──► Host Synthesis Call (Prompt Versioned)
+                             │
+                             ▼
+           [capstone_traces.jsonl] (PII Hash + Cost/Latency per Span)
+                             │
+                             ▼
+    [User Response with Mandatory Version Citation [recipe_id#version=...]]
 ```
 
 ---
 
-## Setup
-
-### 1. Install dependencies
-
-```powershell
-python -m pip install -r requirements.txt
-```
-
-### 2. Get your free Hugging Face API Token
-
-1. Go to https://huggingface.co/settings/tokens
-2. Create a free token (read access is enough)
-3. Either:
-   - Create a `.env` file in the project root with: `HF_TOKEN=hf_your_token_here`
-   - Or the app will prompt you to enter it on first run
-
-### 3. Build the vector database
-
-```powershell
-python pdf_to_vector.py
-```
-
-### 4. Ask questions
-
-```powershell
-python app.py
-```
-
-Every request is now recorded in `traces/requests.jsonl` with a UUID, prompt
-version and full prompt, retrieved chunk IDs/scores/text, model settings, raw
-model output, and final output. The trace file is intentionally ignored by Git
-because it can contain user questions and cookbook excerpts. Use
-`--no-trace` to turn this off, or `--trace-file path/to/file.jsonl` to change
-the location.
-
-### Week 5: error-analysis workflow
-
-Collect at least 20 genuine requests before analysing them—do not manufacture
-traces or substitute a hand-picked demo set. Then make a reproducible sample:
-
-```powershell
-python make_week5_sample.py --seed 20260824
-```
-
-This writes `week5/sample.json`, `week5/notes.md`, and `week5/taxonomy.md`.
-Read the selected traces and replace only the observation placeholders before
-creating categories. To replay the first selected trace from its saved prompt
-(without re-running retrieval), use:
-
-```powershell
-python replay_trace.py --trace-id YOUR_TRACE_ID
-```
-
-After you have open-coded and clustered the sample, write the dated,
-numbered prediction in `week5/notes.md` and commit it **before** changing the
-app to fix the chosen mode.
-
-### 5. Run chunk size comparison
-
-```powershell
-python evaluate_chunking.py
-```
-
-### 6. Run automated tests
-
-```powershell
-python test_rag.py
-```
-
----
-
-## Mentor Evaluation Checklist
-
-| # | Criterion | How it's met |
-|---|-----------|-------------|
-| 1 | Can the app answer a question correctly? | Yes — retrieves top-3 chunks via FAISS, generates answer via FLAN-T5 API |
-| 2 | Does every answer show the source document? | Yes — shows filename + exact page number |
-| 3 | Does it admit it doesn't know for off-topic questions? | Yes — similarity threshold + prompt guard |
-| 4 | Did they try more than one chunk size? | Yes — `evaluate_chunking.py` compares 250, 500, 1000 |
+## Kitchen Reality Safeguards Enforced
+1. **Exact-Match Allergen Declarations:** Never infers allergen safety from prose. Evaluates structured `allergens` and `may_contain` fields.
+2. **Versioned Citations:** Mandatory citation of recipe ID and formulation version (`reformulated-2025` vs `original`). Prevents citing superseded recipes.
+3. **Cook-Time Invariant Scaling:** Scaling batch quantities 4x scales grams/milliliters linearly, but preserves bake/cook time.
+4. **Internal Safety Temperatures:** Poultry dishes strictly assert minimum internal temperature of **74°C (165°F)**.
+5. **PII Health Line Held:** User dietary health declarations are salted and hashed (SHA-256) before trace persistence.

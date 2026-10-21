@@ -1,0 +1,8 @@
+{
+  "servers": {
+    "recipe_safety_server": {
+      "command": "python",
+      "args": ["mcp_recipe_server.py"]
+    }
+  }
+}
