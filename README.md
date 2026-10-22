@@ -1,6 +1,6 @@
 # Pantry-to-Plate Assistant (Week 12 Capstone - Variant B)
 
-> **M6 Capstone Portfolio Piece:** A production-grade, observable culinary assistant combining 11 weeks of RAG, hand-built agent loops, live Model Context Protocol (MCP) tool discovery, exact-match allergen safety, and per-request span logging.
+> **M6 Capstone Portfolio Piece:** A production-grade, observable culinary assistant combining 11 weeks of RAG, hand-built agent loops, live Model Context Protocol (MCP) tool discovery, exact-match allergen safety, per-request span logging, and an interactive Web UI.
 
 ---
 
@@ -8,24 +8,34 @@
 
 No complex environment setup or external GPU required. Run with standard Python:
 
-### 1. Run the Live 4-Part Summit Demo (Recommended for Evaluation)
+### 1. Launch the Interactive Web UI (Browser Chatbot)
+```powershell
+python main.py --ui
+```
+*or directly:*
+```powershell
+python ui.py
+```
+*Opens a modern, responsive web application at `http://127.0.0.1:8000` with real-time span telemetry, test-kitchen presets, allergen constraints, live 30-case eval suite runner, and summit demo viewer.*
+
+### 2. Run the Live 4-Part Summit Demo (Terminal Mode)
 ```powershell
 python main.py --demo
 ```
 *Delivers the complete four-part summit presentation live to the clock: Real Run -> Failures Found -> A Number That Moved -> 10x Scale Plan.*
 
-### 2. Run the Full 30-Case Integrated Evaluation Suite
+### 3. Run the Full 30-Case Integrated Evaluation Suite
 ```powershell
 python main.py --eval
 ```
-*Executes all 30 deterministic assertions and LLM Judge evaluations across 6 categories in ~5 seconds.*
+*Executes all 30 deterministic assertions and LLM Judge evaluations across 6 categories in ~5 seconds (100% pass, 100% judge agreement).*
 
-### 3. Ask a Custom Cooking / Pantry Question
+### 4. Ask a Custom Cooking / Pantry Question (CLI)
 ```powershell
 python main.py --query "I have flour, butter, and sugar. Can I make traditional shortbread?" --allergy "nuts" --servings 8
 ```
 
-### 4. Interactive Pantry Mode
+### 5. Interactive Terminal Mode
 ```powershell
 python main.py
 ```
@@ -38,7 +48,8 @@ All capstone deliverables required by the M6 House Rubric are located in [`week1
 
 | Deliverable File | Description & Rubric Evidence |
 | :--- | :--- |
-| **[`main.py`](main.py)** | **Single Entry Point:** Runs app, eval suite, and 4-part demo from one command. |
+| **[`main.py`](main.py)** | **Single Entry Point:** Runs app, Web UI, eval suite, and 4-part demo from one command. |
+| **[`ui.py`](ui.py)** | **Web UI Chatbot:** Zero-dependency responsive interface with live trace telemetry and presets. |
 | **[`week12/seams.md`](week12/seams.md)** | **Tuesday's Unedited Seam List:** 8 integration seams audit marked fixed, accepted, or deferred. |
 | **[`week12/architecture.md`](week12/architecture.md)** | **One-Page Architecture Sketch:** Mermaid flowchart, host LLM isolation, and cost breakdown per span. |
 | **[`week12/eval_report.md`](week12/eval_report.md)** | **Eval Suite Output:** 30 cases (100% pass), n=80 reformulation drop (32.5% -> 0.0%), 100% judge agreement, stated non-coverage. |
@@ -56,9 +67,9 @@ All capstone deliverables required by the M6 House Rubric are located in [`week1
 ## Core System Architecture
 
 ```text
-[User Query + Allergy]
-       │
-       ▼
+[User Query + Allergy via Web UI or CLI]
+                    │
+                    ▼
  [main.py Gateway] ───► [Host Agent Orchestrator] ◄──► [MCP Recipe & Safety Server]
                              │                                 ├── search_recipe_library
                              │ (Single trace_id surviving)     ├── check_allergen_field (EXACT-MATCH)

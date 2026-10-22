@@ -3,6 +3,7 @@ Pantry-to-Plate Assistant: Capstone Single Entry Point (Week 12)
 One entry point for a stranger to clone and run end-to-end.
 Usage:
   python main.py                           # Interactive pantry query mode
+  python main.py --ui                      # Launch interactive Web UI in browser
   python main.py --eval                    # Run the 30-case integrated evaluation suite
   python main.py --demo                    # Run the live 4-part summit demo
   python main.py --query "your question"   # Single question runner
@@ -90,10 +91,17 @@ def main():
     parser = argparse.ArgumentParser(description="Pantry-to-Plate Assistant: Week 12 Capstone")
     parser.add_argument("--eval", action="store_true", help="Run the full 30-case integrated evaluation suite")
     parser.add_argument("--demo", action="store_true", help="Run the live 4-part capstone summit demo")
+    parser.add_argument("--ui", action="store_true", help="Launch the interactive Web UI")
+    parser.add_argument("--port", type=int, default=8000, help="Port for the Web UI (default: 8000)")
     parser.add_argument("--query", type=str, help="Submit a single question to the pantry assistant")
     parser.add_argument("--allergy", type=str, default=None, help="Optional declared allergy (e.g. nuts, dairy, fish)")
     parser.add_argument("--servings", type=int, default=4, help="Target servings (default: 4)")
     args = parser.parse_args()
+
+    if args.ui:
+        import ui
+        ui.run_server(port=args.port)
+        return
 
     if args.eval:
         run_capstone_eval_suite()
@@ -117,6 +125,7 @@ def main():
     print("=" * 65)
     print("Pantry-to-Plate Assistant (Week 12 Capstone)")
     print("Type your cooking/pantry question. Type 'exit' to quit.")
+    print("To launch the web UI, run: python main.py --ui")
     print("=" * 65)
     
     while True:
