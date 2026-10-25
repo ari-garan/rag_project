@@ -457,6 +457,208 @@ RECIPE_DATABASE: Dict[str, Dict[str, Any]] = {
         "method": "Soak rice and urad dal separately. Grind urad dal until fluffy and light, and rice until fine rava texture. Mix, add salt, and ferment for 8 to 12 hours. Grease idli plates, pour fermented batter, and steam for 10-12 minutes until soft and pillowy.",
         "safe_internal_temp": None,
         "version_notes": "Steamed fermented rice-lentil cakes. Vegan, gluten-free, nut-free."
+    },
+    "recipe_egg_rice": {
+        "id": "recipe_egg_rice",
+        "title": "South Indian Style Egg Rice (Muttai Sadam)",
+        "version": "reformulated-2025",
+        "is_superseded": False,
+        "prep_time_minutes": 10,
+        "cook_time_minutes": 15,
+        "servings": 4,
+        "ingredients": [
+            {"name": "cooked cooled rice", "quantity": 400, "unit": "g"},
+            {"name": "whole eggs beaten", "quantity": 4, "unit": "large"},
+            {"name": "sliced red onions", "quantity": 2, "unit": "medium"},
+            {"name": "green chilies and curry leaves", "quantity": 1, "unit": "tbsp"},
+            {"name": "crushed black pepper", "quantity": 1.5, "unit": "tsp"},
+            {"name": "fennel seeds (saunf)", "quantity": 0.5, "unit": "tsp"},
+            {"name": "turmeric and chili powder", "quantity": 1, "unit": "tsp"},
+            {"name": "sesame or sunflower oil", "quantity": 2, "unit": "tbsp"}
+        ],
+        "allergens": ["eggs"],
+        "may_contain": [],
+        "method": "Heat oil in wok, splutter fennel seeds. Sauté onions, chilies, and curry leaves until golden. Pour in beaten eggs and scramble on medium-high until cooked through and firm. Add salt, turmeric, and black pepper. Toss in cooked cooled rice and stir-fry on high heat for 3 minutes. Nut-free.",
+        "safe_internal_temp": "71°C (160°F)",
+        "version_notes": "Street-style South Indian fast-food egg rice (muttai sadam). Nut-free, contains eggs."
+    },
+    "recipe_egg_kurma": {
+        "id": "recipe_egg_kurma",
+        "title": "South Indian Egg Kurma (Muttai Salna)",
+        "version": "reformulated-2025",
+        "is_superseded": False,
+        "prep_time_minutes": 15,
+        "cook_time_minutes": 25,
+        "servings": 4,
+        "ingredients": [
+            {"name": "hard boiled eggs (pricked)", "quantity": 4, "unit": "large"},
+            {"name": "ground coconut and poppy seed paste", "quantity": 0.5, "unit": "cup"},
+            {"name": "onions and tomatoes", "quantity": 2, "unit": "chopped"},
+            {"name": "ginger garlic paste", "quantity": 1, "unit": "tbsp"},
+            {"name": "kurma spice powder (coriander, chili, garam masala)", "quantity": 2, "unit": "tbsp"},
+            {"name": "fennel seeds, cinnamon, cloves", "quantity": 1, "unit": "tsp"},
+            {"name": "cooking oil", "quantity": 2, "unit": "tbsp"}
+        ],
+        "allergens": ["eggs"],
+        "may_contain": [],
+        "method": "Shallow fry boiled eggs with turmeric until skin blisters. In same pan, fry whole spices, onions, and ginger-garlic paste. Add tomatoes and kurma spices. Pour in ground coconut paste and simmer for 10 minutes until oil floats on top. Add fried eggs and simmer for 5 minutes.",
+        "safe_internal_temp": None,
+        "version_notes": "Aromatic hotel-style salna / kurma for parotta, dosa, or rice. Contains eggs."
+    },
+    "recipe_pulihora": {
+        "id": "recipe_pulihora",
+        "title": "Andhra Pulihora (Traditional Tamarind Rice)",
+        "version": "reformulated-2025",
+        "is_superseded": False,
+        "prep_time_minutes": 15,
+        "cook_time_minutes": 20,
+        "servings": 4,
+        "ingredients": [
+            {"name": "cooked cooled sona masoori rice", "quantity": 400, "unit": "g"},
+            {"name": "thick tamarind pulp", "quantity": 3, "unit": "tbsp"},
+            {"name": "roasted peanuts", "quantity": 3, "unit": "tbsp"},
+            {"name": "mustard seeds, chana dal, urad dal", "quantity": 1.5, "unit": "tbsp"},
+            {"name": "slit green chilies and dried red chilies", "quantity": 4, "unit": "pieces"},
+            {"name": "turmeric and asafoetida (hing)", "quantity": 1, "unit": "tsp"},
+            {"name": "sesame oil", "quantity": 3, "unit": "tbsp"}
+        ],
+        "allergens": ["peanuts"],
+        "may_contain": [],
+        "method": "Simmer tamarind extract with turmeric, green chilies, and salt until thick paste (pulikachal). Heat sesame oil, crackle mustard, chana dal, urad dal, peanuts, and red chilies. Fold tamarind paste and tempering into cooled rice gently. Contains peanuts.",
+        "safe_internal_temp": None,
+        "version_notes": "Traditional temple-style tangy tamarind rice. Contains peanuts."
+    },
+    "recipe_coconut_rice": {
+        "id": "recipe_coconut_rice",
+        "title": "Fragrant South Indian Coconut Rice (Thengai Sadam)",
+        "version": "reformulated-2025",
+        "is_superseded": False,
+        "prep_time_minutes": 10,
+        "cook_time_minutes": 15,
+        "servings": 4,
+        "ingredients": [
+            {"name": "cooked cooled rice", "quantity": 400, "unit": "g"},
+            {"name": "freshly grated coconut", "quantity": 150, "unit": "g"},
+            {"name": "cashews (halved)", "quantity": 2, "unit": "tbsp"},
+            {"name": "mustard seeds and urad dal", "quantity": 1, "unit": "tbsp"},
+            {"name": "green chilies and ginger", "quantity": 1, "unit": "tbsp"},
+            {"name": "pure coconut oil", "quantity": 2, "unit": "tbsp"}
+        ],
+        "allergens": ["tree nuts"],
+        "may_contain": [],
+        "method": "Heat virgin coconut oil in a pan. Fry mustard seeds, urad dal, and cashews until golden brown. Add chopped ginger, green chilies, and curry leaves. Add grated coconut and sauté on low heat for 2 minutes without browning. Fold into cooled cooked rice with salt.",
+        "safe_internal_temp": None,
+        "version_notes": "Traditional festive rice dish. Contains cashews (tree nuts)."
+    },
+    "recipe_ghee_rice": {
+        "id": "recipe_ghee_rice",
+        "title": "Malabar Fragrant Ghee Rice (Nei Choru)",
+        "version": "reformulated-2025",
+        "is_superseded": False,
+        "prep_time_minutes": 15,
+        "cook_time_minutes": 25,
+        "servings": 4,
+        "ingredients": [
+            {"name": "jeerakasala or kaima rice", "quantity": 300, "unit": "g"},
+            {"name": "pure dairy ghee", "quantity": 4, "unit": "tbsp"},
+            {"name": "thinly sliced onions (crispy fried birista)", "quantity": 2, "unit": "medium"},
+            {"name": "whole spices (cardamom, cloves, cinnamon, bay leaf)", "quantity": 1, "unit": "tbsp"},
+            {"name": "cashews and raisins", "quantity": 2, "unit": "tbsp"},
+            {"name": "water", "quantity": 600, "unit": "ml"}
+        ],
+        "allergens": ["dairy", "tree nuts"],
+        "may_contain": [],
+        "method": "Heat ghee, fry cashews, raisins, and half the onions until crisp and golden brown; set aside for garnish. In remaining ghee, sauté whole spices and drained rice for 3 minutes until aromatic. Pour boiling salted water, cover tightly, and cook on low heat for 10 minutes until water is absorbed.",
+        "safe_internal_temp": None,
+        "version_notes": "Iconic Malabar celebration rice dish. Contains dairy and tree nuts."
+    },
+    "recipe_vangi_bath": {
+        "id": "recipe_vangi_bath",
+        "title": "Karnataka Vangi Bath (Spiced Brinjal Rice)",
+        "version": "reformulated-2025",
+        "is_superseded": False,
+        "prep_time_minutes": 15,
+        "cook_time_minutes": 20,
+        "servings": 4,
+        "ingredients": [
+            {"name": "cooked sona masoori rice", "quantity": 400, "unit": "g"},
+            {"name": "slender eggplants (brinjal) sliced lengthwise", "quantity": 250, "unit": "g"},
+            {"name": "freshly roasted vangi bath powder", "quantity": 2.5, "unit": "tbsp"},
+            {"name": "tamarind pulp", "quantity": 1, "unit": "tbsp"},
+            {"name": "mustard seeds and curry leaves", "quantity": 1, "unit": "tsp"},
+            {"name": "peanut oil", "quantity": 2, "unit": "tbsp"}
+        ],
+        "allergens": ["peanuts"],
+        "may_contain": [],
+        "method": "Heat oil, crackle mustard and curry leaves. Sauté eggplant wedges until tender and browned. Add tamarind pulp, turmeric, salt, and vangi bath masala powder. Cook for 5 minutes into thick masala. Gently fold cooked rice into eggplant masala until evenly coated.",
+        "safe_internal_temp": None,
+        "version_notes": "Classic Mysore and Karnataka eggplant spiced rice. Contains peanut oil."
+    },
+    "recipe_ven_pongal": {
+        "id": "recipe_ven_pongal",
+        "title": "Classic South Indian Ven Pongal (Khara Pongal)",
+        "version": "reformulated-2025",
+        "is_superseded": False,
+        "prep_time_minutes": 10,
+        "cook_time_minutes": 20,
+        "servings": 4,
+        "ingredients": [
+            {"name": "raw rice", "quantity": 200, "unit": "g"},
+            {"name": "yellow split moong dal", "quantity": 75, "unit": "g"},
+            {"name": "dairy ghee", "quantity": 3, "unit": "tbsp"},
+            {"name": "whole black peppercorns and cumin seeds", "quantity": 2, "unit": "tsp"},
+            {"name": "finely chopped ginger", "quantity": 1, "unit": "tbsp"},
+            {"name": "cashews", "quantity": 2, "unit": "tbsp"},
+            {"name": "asafoetida (hing) and curry leaves", "quantity": 1, "unit": "tsp"}
+        ],
+        "allergens": ["dairy", "tree nuts"],
+        "may_contain": [],
+        "method": "Dry roast moong dal until fragrant. Pressure cook rice and dal with 4 cups water and salt until very soft and mushy. Heat ghee in small kadai, fry cashews, pepper, cumin, ginger, hing, and curry leaves. Pour sizzling tadka over hot pongal and mix thoroughly.",
+        "safe_internal_temp": None,
+        "version_notes": "Traditional savory tiffin breakfast. Contains dairy and cashews."
+    },
+    "recipe_appam": {
+        "id": "recipe_appam",
+        "title": "Kerala Soft Appam (Lacy Fermented Rice Pancakes)",
+        "version": "reformulated-2025",
+        "is_superseded": False,
+        "prep_time_minutes": 20,
+        "cook_time_minutes": 15,
+        "servings": 4,
+        "ingredients": [
+            {"name": "raw rice soaked", "quantity": 300, "unit": "g"},
+            {"name": "fresh coconut milk", "quantity": 200, "unit": "ml"},
+            {"name": "cooked rice", "quantity": 50, "unit": "g"},
+            {"name": "active dry yeast", "quantity": 0.5, "unit": "tsp"},
+            {"name": "sugar and salt", "quantity": 1, "unit": "tbsp"}
+        ],
+        "allergens": [],
+        "may_contain": [],
+        "method": "Grind soaked rice and cooked rice with coconut milk into smooth batter. Dissolve yeast and sugar in warm water, add to batter. Ferment for 6 to 8 hours until bubbly. Swirl a ladleful in hot nonstick appachatti pan, cover, and steam until edges are crispy and lacy with a fluffy soft center. Nut-free, dairy-free, vegan.",
+        "safe_internal_temp": None,
+        "version_notes": "Naturally vegan, gluten-free, nut-free."
+    },
+    "recipe_fish_pulusu": {
+        "id": "recipe_fish_pulusu",
+        "title": "Andhra Chepala Pulusu (Fish Curry)",
+        "version": "reformulated-2025",
+        "is_superseded": False,
+        "prep_time_minutes": 20,
+        "cook_time_minutes": 25,
+        "servings": 4,
+        "ingredients": [
+            {"name": "firm fish steaks (such as rohu or tilapia)", "quantity": 500, "unit": "g"},
+            {"name": "tamarind pulp", "quantity": 3, "unit": "tbsp"},
+            {"name": "shallots and green chilies", "quantity": 100, "unit": "g"},
+            {"name": "roasted fenugreek and cumin powder", "quantity": 1, "unit": "tsp"},
+            {"name": "red chili powder and coriander powder", "quantity": 2, "unit": "tbsp"},
+            {"name": "sesame oil", "quantity": 3, "unit": "tbsp"}
+        ],
+        "allergens": ["fish"],
+        "may_contain": [],
+        "method": "Sauté shallots, garlic, and green chilies in sesame oil. Add chili and coriander powder with tamarind water. Bring to a boil. Gently slide in fish pieces. Simmer on low heat for 12 minutes until fish is cooked through and registers internal temperature of 63°C (145°F). Finish with roasted methi powder.",
+        "safe_internal_temp": "63°C (145°F)",
+        "version_notes": "Authentic spicy tamarind Andhra fish curry. Enforces 63°C fish safety rule."
     }
 }
 
@@ -552,21 +754,36 @@ def search_recipe_corpus(query: str, version_preference: str = "reformulated-202
     Includes fuzzy matching for culinary spelling variants (e.g. biriyani -> biryani, sambhar -> sambar).
     """
     stopwords = {"recipe", "recipes", "query", "ingredient", "ingredients", "dish", "make", "cook", "how", "to", "i", "have", "can", "for", "with", "a", "the", "in", "and", "or", "prepare", "preparation", "give", "me", "show", "tell", "steps", "of", "is", "it"}
+    generic_staples = {"rice", "curry", "dish", "soup", "roast", "bread", "fry", "batter", "style"}
     raw_tokens = set(re.findall(r'\w+', query.lower()))
     q_tokens = raw_tokens - stopwords
     if not q_tokens:
         q_tokens = raw_tokens
         
+    distinctive_tokens = q_tokens - generic_staples
     scored_results = []
     
     for r_id, rec in RECIPE_DATABASE.items():
         title_tokens = set(re.findall(r'\w+', rec["title"].lower()))
         ing_tokens = set(re.findall(r'\w+', " ".join([i["name"] for i in rec["ingredients"]]).lower()))
+        all_recipe_tokens = title_tokens | ing_tokens
+        
+        # Guard: If query specifies distinctive ingredients (e.g. 'egg', 'curd', 'lemon', 'fish'),
+        # do not match a candidate that lacks those distinctive tokens (prevents 'egg rice' falling back to 'lemon rice')
+        if distinctive_tokens and not distinctive_tokens.intersection(all_recipe_tokens):
+            continue
+
+        matched_title = q_tokens.intersection(title_tokens)
+        matched_ing = q_tokens.intersection(ing_tokens)
         
         # Scoring
         score = 0
-        score += len(q_tokens.intersection(title_tokens)) * 5
-        score += len(q_tokens.intersection(ing_tokens)) * 2
+        score += len(matched_title) * 6
+        score += len(matched_ing) * 2
+
+        # Exact multi-token match bonus for title
+        if len(matched_title) == len(q_tokens) and len(q_tokens) > 1:
+            score += 15.0
 
         # Fuzzy match for spelling variants (e.g. biriyani vs biryani)
         for qt in q_tokens:
@@ -581,7 +798,7 @@ def search_recipe_corpus(query: str, version_preference: str = "reformulated-202
         if rec["version"] == version_preference:
             score += 1.5
             
-        if score > 1.5:  # Require at least one token match
+        if score > 2.0:  # Require at least one token match
             scored_results.append((score, rec))
             
     scored_results.sort(key=lambda x: x[0], reverse=True)
