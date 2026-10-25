@@ -10,7 +10,7 @@ import sys
 import os
 import json
 import urllib.parse
-from http.server import HTTPServer, BaseHTTPRequestHandler
+from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 import webbrowser
 
 # Ensure UTF-8 output on Windows consoles
@@ -494,7 +494,7 @@ PART 4: WHAT'S NEXT & WHAT BREAKS AT 50,000 QUERIES/DAY
 
 def run_server(port: int = 8000, open_browser: bool = True):
     server_address = ("127.0.0.1", port)
-    httpd = HTTPServer(server_address, AssistantHTTPHandler)
+    httpd = ThreadingHTTPServer(server_address, AssistantHTTPHandler)
     url = f"http://127.0.0.1:{port}"
     print("=" * 65)
     print(f"[Pantry-to-Plate] Web UI running at: {url}")
