@@ -729,7 +729,7 @@ RECIPE_DATABASE: Dict[str, Dict[str, Any]] = {
     },
     "recipe_margherita_pizza": {
         "id": "recipe_margherita_pizza",
-        "title": "Classic Artisan Margherita Pizza",
+        "title": "Classic Margherita Pizza",
         "version": "reformulated-2025",
         "is_superseded": False,
         "prep_time_minutes": 20,
@@ -769,6 +769,137 @@ RECIPE_DATABASE: Dict[str, Dict[str, Any]] = {
         "method": "Boil penne in salted water until al dente. In a skillet, gently sauté minced garlic in butter and olive oil until fragrant. Pour in heavy cream and simmer for 3 minutes. Stir in grated parmesan until melted into silky sauce. Toss hot pasta in sauce with cracked black pepper and fresh parsley.",
         "safe_internal_temp": None,
         "version_notes": "Classic Italian-American skillet pasta. Nut-free, contains gluten and dairy."
+    },
+    "recipe_hakka_veg_noodles": {
+        "id": "recipe_hakka_veg_noodles",
+        "title": "Street Style Veg Hakka Noodles",
+        "version": "reformulated-2025",
+        "is_superseded": False,
+        "prep_time_minutes": 15,
+        "cook_time_minutes": 10,
+        "servings": 4,
+        "ingredients": [
+            {"name": "hakka noodles (boiled al dente)", "quantity": 400, "unit": "g"},
+            {"name": "shredded cabbage and carrots", "quantity": 200, "unit": "g"},
+            {"name": "sliced bell peppers (capsicum)", "quantity": 1, "unit": "cup"},
+            {"name": "dark soy sauce and green chili sauce", "quantity": 2, "unit": "tbsp"},
+            {"name": "rice vinegar or white vinegar", "quantity": 1, "unit": "tsp"},
+            {"name": "minced garlic and spring onions", "quantity": 2, "unit": "tbsp"},
+            {"name": "toasted sesame oil or vegetable oil", "quantity": 2, "unit": "tbsp"}
+        ],
+        "allergens": ["gluten", "soy"],
+        "may_contain": [],
+        "method": "Boil noodles until al dente, drain, rinse with cold water, and toss with 1 tsp oil. Heat wok on highest flame until smoking. Add oil, minced garlic, and flash-fry shredded vegetables for 2 minutes keeping them crunchy. Add noodles, soy sauce, green chili sauce, vinegar, and white pepper. Toss vigorously on high heat for 2 minutes. Garnish with spring onion greens. Nut-free.",
+        "safe_internal_temp": None,
+        "version_notes": "Street-style Indo-Chinese stir-fried noodles. Nut-free, contains gluten and soy."
+    },
+    "recipe_chicken_noodles": {
+        "id": "recipe_chicken_noodles",
+        "title": "Wok Tossed Chicken Hakka Noodles",
+        "version": "reformulated-2025",
+        "is_superseded": False,
+        "prep_time_minutes": 15,
+        "cook_time_minutes": 15,
+        "servings": 4,
+        "ingredients": [
+            {"name": "egg noodles or hakka noodles (boiled)", "quantity": 400, "unit": "g"},
+            {"name": "thinly sliced chicken breast", "quantity": 300, "unit": "g"},
+            {"name": "julienned vegetables (cabbage, carrot, onion)", "quantity": 150, "unit": "g"},
+            {"name": "soy sauce, red chili sauce, oyster sauce", "quantity": 2.5, "unit": "tbsp"},
+            {"name": "garlic and ginger minced", "quantity": 1.5, "unit": "tbsp"},
+            {"name": "cooking oil", "quantity": 2, "unit": "tbsp"}
+        ],
+        "allergens": ["gluten", "soy", "eggs"],
+        "may_contain": [],
+        "method": "Stir-fry chicken strips on high heat in wok until fully cooked and internal temperature reaches 74°C (165°F). Push chicken to side, flash-fry ginger, garlic, and julienned vegetables for 1 minute. Add boiled noodles and sauce blend. Toss rapidly on high heat until noodles are glossy and smoky.",
+        "safe_internal_temp": "74°C (165°F)",
+        "version_notes": "Enforces 74°C poultry safe internal temperature rule. Contains gluten, soy, eggs."
+    },
+    "recipe_ramen_noodles": {
+        "id": "recipe_ramen_noodles",
+        "title": "Savory Miso Sesame Broth Ramen Noodles",
+        "version": "reformulated-2025",
+        "is_superseded": False,
+        "prep_time_minutes": 15,
+        "cook_time_minutes": 15,
+        "servings": 4,
+        "ingredients": [
+            {"name": "fresh or dried ramen noodles", "quantity": 400, "unit": "g"},
+            {"name": "rich vegetable or chicken broth", "quantity": 1000, "unit": "ml"},
+            {"name": "red miso paste", "quantity": 3, "unit": "tbsp"},
+            {"name": "toasted sesame oil and chili oil", "quantity": 1, "unit": "tbsp"},
+            {"name": "ramen eggs (ajitsuke tamago)", "quantity": 2, "unit": "whole"},
+            {"name": "sliced scallions and nori sheets", "quantity": 2, "unit": "tbsp"}
+        ],
+        "allergens": ["gluten", "soy", "eggs", "sesame"],
+        "may_contain": [],
+        "method": "Whisk miso paste with hot broth until fully dissolved and smooth. Boil ramen noodles separately for 2.5 minutes until springy; drain immediately. Divide noodles into deep bowls, ladle steaming hot miso broth over. Top with halved ramen eggs, toasted sesame oil, scallions, and nori sheets.",
+        "safe_internal_temp": None,
+        "version_notes": "Authentic comforting Japanese noodle soup. Contains gluten, soy, eggs, sesame."
+    },
+    "recipe_vegetable_fried_rice": {
+        "id": "recipe_vegetable_fried_rice",
+        "title": "Classic Indo-Chinese Vegetable Fried Rice",
+        "version": "reformulated-2025",
+        "is_superseded": False,
+        "prep_time_minutes": 15,
+        "cook_time_minutes": 10,
+        "servings": 4,
+        "ingredients": [
+            {"name": "cooked cooled long-grain or basmati rice", "quantity": 500, "unit": "g"},
+            {"name": "finely chopped carrots, beans, and cabbage", "quantity": 200, "unit": "g"},
+            {"name": "minced garlic and celery", "quantity": 2, "unit": "tbsp"},
+            {"name": "light soy sauce and vinegar", "quantity": 1.5, "unit": "tbsp"},
+            {"name": "crushed white pepper and salt", "quantity": 1, "unit": "tsp"},
+            {"name": "sesame oil", "quantity": 2, "unit": "tbsp"}
+        ],
+        "allergens": ["soy", "gluten"],
+        "may_contain": [],
+        "method": "Heat wok on high until smoking. Swirl sesame oil, sizzle minced garlic and celery. Add diced vegetables and stir-fry on intense heat for 2 minutes. Fold in cold cooked rice, soy sauce, vinegar, and white pepper. Toss on high flame continuously for 3 minutes without breaking rice grains. Garnish with spring onions.",
+        "safe_internal_temp": None,
+        "version_notes": "Smoky restaurant-style veg fried rice. Nut-free, contains soy and gluten."
+    },
+    "recipe_grilled_cheese_sandwich": {
+        "id": "recipe_grilled_cheese_sandwich",
+        "title": "Golden Toasted Cheddar Grilled Cheese Sandwich",
+        "version": "reformulated-2025",
+        "is_superseded": False,
+        "prep_time_minutes": 5,
+        "cook_time_minutes": 8,
+        "servings": 4,
+        "ingredients": [
+            {"name": "thick sourdough or country bread slices", "quantity": 8, "unit": "slices"},
+            {"name": "sharp cheddar and gruyere cheese slices", "quantity": 250, "unit": "g"},
+            {"name": "dairy butter softened", "quantity": 4, "unit": "tbsp"},
+            {"name": "dijon mustard (optional)", "quantity": 1, "unit": "tsp"}
+        ],
+        "allergens": ["gluten", "dairy"],
+        "may_contain": [],
+        "method": "Spread softened butter evenly on outside of bread slices. Layer cheese generously between unbuttered sides. Heat cast iron skillet over medium-low heat. Toast sandwiches for 3-4 minutes per side until bread is golden-brown and crispy, and cheese is completely melted and gooey.",
+        "safe_internal_temp": None,
+        "version_notes": "Comfort food classic sandwich. Nut-free, contains gluten and dairy."
+    },
+    "recipe_crispy_vegetable_samosa": {
+        "id": "recipe_crispy_vegetable_samosa",
+        "title": "Crispy Punjabi Potato and Green Pea Samosa",
+        "version": "reformulated-2025",
+        "is_superseded": False,
+        "prep_time_minutes": 25,
+        "cook_time_minutes": 20,
+        "servings": 4,
+        "ingredients": [
+            {"name": "all-purpose flour pastry dough with ajwain", "quantity": 250, "unit": "g"},
+            {"name": "boiled spiced potatoes mashed", "quantity": 400, "unit": "g"},
+            {"name": "green peas", "quantity": 100, "unit": "g"},
+            {"name": "roasted cumin, coriander, and amchur powder", "quantity": 2, "unit": "tbsp"},
+            {"name": "green chilies and ginger", "quantity": 1, "unit": "tbsp"},
+            {"name": "oil for deep frying", "quantity": 500, "unit": "ml"}
+        ],
+        "allergens": ["gluten"],
+        "may_contain": [],
+        "method": "Roll pastry dough into ovals, cut in half, form cones, and fill with spiced potato-pea mixture. Seal edges tightly with water. Deep fry in medium-hot oil (160°C) for 12-15 minutes until pastry is blister-free, golden, and shatteringly crisp.",
+        "safe_internal_temp": None,
+        "version_notes": "Traditional Punjabi triangular samosas. Vegan, nut-free, contains gluten."
     }
 }
 
@@ -878,10 +1009,25 @@ def search_recipe_corpus(query: str, version_preference: str = "reformulated-202
         ing_tokens = set(re.findall(r'\w+', " ".join([i["name"] for i in rec["ingredients"]]).lower()))
         all_recipe_tokens = title_tokens | ing_tokens
         
-        # Guard: If query specifies distinctive ingredients (e.g. 'egg', 'curd', 'lemon', 'fish'),
-        # do not match a candidate that lacks those distinctive tokens (prevents 'egg rice' falling back to 'lemon rice')
-        if distinctive_tokens and not distinctive_tokens.intersection(all_recipe_tokens):
-            continue
+        # Guard: If query specifies distinctive ingredients (e.g. 'egg', 'curd', 'lemon', 'fish', 'noodel'),
+        # do not match a candidate that lacks those distinctive tokens (fuzzy match supported for typos like noodel -> noodles)
+        if distinctive_tokens:
+            has_distinctive = False
+            for dt in distinctive_tokens:
+                dt_stem = dt[:-1] if dt.endswith('s') else dt
+                if dt in all_recipe_tokens:
+                    has_distinctive = True
+                    break
+                for rt in all_recipe_tokens:
+                    rt_stem = rt[:-1] if rt.endswith('s') else rt
+                    if len(dt) >= 4 and len(rt) >= 4:
+                        if max(difflib.SequenceMatcher(None, dt, rt).ratio(), difflib.SequenceMatcher(None, dt_stem, rt_stem).ratio()) >= 0.75:
+                            has_distinctive = True
+                            break
+                if has_distinctive:
+                    break
+            if not has_distinctive:
+                continue
 
         matched_title = q_tokens.intersection(title_tokens)
         matched_ing = q_tokens.intersection(ing_tokens)
@@ -895,13 +1041,19 @@ def search_recipe_corpus(query: str, version_preference: str = "reformulated-202
         if len(matched_title) == len(q_tokens) and len(q_tokens) > 1:
             score += 15.0
 
-        # Fuzzy match for spelling variants (e.g. biriyani vs biryani)
+        # Fuzzy match for spelling variants (e.g. biriyani vs biryani, noodel vs noodles)
         for qt in q_tokens:
             if qt not in title_tokens:
+                qt_stem = qt[:-1] if qt.endswith('s') else qt
                 for tt in title_tokens:
+                    tt_stem = tt[:-1] if tt.endswith('s') else tt
                     if len(qt) >= 4 and len(tt) >= 4:
-                        if difflib.SequenceMatcher(None, qt, tt).ratio() >= 0.82:
-                            score += 4.5
+                        ratio = max(
+                            difflib.SequenceMatcher(None, qt, tt).ratio(),
+                            difflib.SequenceMatcher(None, qt_stem, tt_stem).ratio()
+                        )
+                        if ratio >= 0.75:
+                            score += 5.0
                             break
             
         # Preference boost for requested version
