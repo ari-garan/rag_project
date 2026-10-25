@@ -186,6 +186,187 @@ RECIPE_DATABASE: Dict[str, Dict[str, Any]] = {
         "method": "Make single-thread sugar syrup. Whisk in besan and slowly pour hot ghee until porous fudge forms.",
         "safe_internal_temp": None,
         "version_notes": "Contains pure dairy ghee."
+    },
+    "recipe_chettinad_biryani": {
+        "id": "recipe_chettinad_biryani",
+        "title": "Chettinad Chicken Biryani",
+        "version": "reformulated-2025",
+        "is_superseded": False,
+        "prep_time_minutes": 25,
+        "cook_time_minutes": 40,
+        "servings": 4,
+        "ingredients": [
+            {"name": "seeraga samba rice", "quantity": 500, "unit": "g"},
+            {"name": "chicken pieces", "quantity": 600, "unit": "g"},
+            {"name": "ghee and oil blend", "quantity": 3, "unit": "tbsp"},
+            {"name": "marathi moggu (kapok buds)", "quantity": 2, "unit": "pieces"},
+            {"name": "kalpasi (stone flower)", "quantity": 1, "unit": "tsp"},
+            {"name": "star anise", "quantity": 1, "unit": "piece"},
+            {"name": "onions sliced", "quantity": 2, "unit": "medium"},
+            {"name": "tomatoes", "quantity": 2, "unit": "chopped"},
+            {"name": "ginger garlic paste", "quantity": 2, "unit": "tbsp"},
+            {"name": "mint and coriander leaves", "quantity": 1, "unit": "cup"}
+        ],
+        "allergens": ["dairy"],
+        "may_contain": [],
+        "method": "Sauté whole spices (marathi moggu, stone flower, star anise) in hot ghee. Fry onions, ginger-garlic, mint, and chicken until sealed. Add rice and water (1:2 ratio). Seal pot with dum lid and cook on low heat for 25 minutes until chicken internal temperature reaches 74°C (165°F).",
+        "safe_internal_temp": "74°C (165°F)",
+        "version_notes": "Authentic Chettinad test kitchen recipe using traditional stone flower and kapok buds."
+    },
+    "recipe_chicken_65": {
+        "id": "recipe_chicken_65",
+        "title": "Chennai Style Crispy Chicken 65",
+        "version": "reformulated-2025",
+        "is_superseded": False,
+        "prep_time_minutes": 20,
+        "cook_time_minutes": 15,
+        "servings": 4,
+        "ingredients": [
+            {"name": "boneless chicken cubes", "quantity": 500, "unit": "g"},
+            {"name": "Kashmiri red chili powder", "quantity": 2, "unit": "tbsp"},
+            {"name": "ginger garlic paste", "quantity": 1, "unit": "tbsp"},
+            {"name": "cornstarch", "quantity": 2, "unit": "tbsp"},
+            {"name": "egg", "quantity": 1, "unit": "whole"},
+            {"name": "curry leaves and green chilies", "quantity": 2, "unit": "sprigs"},
+            {"name": "lemon juice", "quantity": 1, "unit": "tbsp"}
+        ],
+        "allergens": ["eggs"],
+        "may_contain": [],
+        "method": "Marinate chicken cubes with chili, ginger-garlic, lemon, egg, and cornstarch for 20 minutes. Deep fry in hot oil (180°C) until deep red and crispy, ensuring internal temperature registers 74°C (165°F). Toss with flash-fried curry leaves.",
+        "safe_internal_temp": "74°C (165°F)",
+        "version_notes": "Legendary Chennai test kitchen recipe."
+    },
+    "recipe_dosa_batter": {
+        "id": "recipe_dosa_batter",
+        "title": "Crispy South Indian Fermented Dosa",
+        "version": "reformulated-2025",
+        "is_superseded": False,
+        "prep_time_minutes": 20,
+        "cook_time_minutes": 10,
+        "servings": 4,
+        "ingredients": [
+            {"name": "idli parboiled rice", "quantity": 300, "unit": "g"},
+            {"name": "whole white urad dal", "quantity": 100, "unit": "g"},
+            {"name": "fenugreek seeds (methi)", "quantity": 1, "unit": "tsp"},
+            {"name": "rock salt", "quantity": 1, "unit": "tsp"},
+            {"name": "sesame oil for roasting", "quantity": 2, "unit": "tbsp"}
+        ],
+        "allergens": [],
+        "may_contain": [],
+        "method": "Soak rice and urad dal with fenugreek for 4 hours. Grind to smooth, airy batter. Ferment for 8 to 12 hours in a warm place until risen. Pour ladleful on hot seasoned cast iron tawa, spread thin in spiral, drizzle oil, and roast until golden and crispy.",
+        "safe_internal_temp": None,
+        "version_notes": "Naturally gluten-free, vegan, nut-free."
+    },
+    "recipe_tomato_rasam": {
+        "id": "recipe_tomato_rasam",
+        "title": "Tangy South Indian Tomato Rasam",
+        "version": "reformulated-2025",
+        "is_superseded": False,
+        "prep_time_minutes": 10,
+        "cook_time_minutes": 15,
+        "servings": 4,
+        "ingredients": [
+            {"name": "ripe tomatoes crushed", "quantity": 3, "unit": "medium"},
+            {"name": "tamarind extract", "quantity": 1, "unit": "tbsp"},
+            {"name": "crushed black pepper and cumin", "quantity": 1.5, "unit": "tbsp"},
+            {"name": "asafoetida (hing resin)", "quantity": 0.25, "unit": "tsp"},
+            {"name": "mustard seeds and curry leaves", "quantity": 1, "unit": "tsp"},
+            {"name": "ghee or coconut oil for tempering", "quantity": 1, "unit": "tbsp"}
+        ],
+        "allergens": [],
+        "may_contain": [],
+        "method": "Boil crushed tomatoes with tamarind, turmeric, and water. Stir in fresh pepper-cumin rasam powder and salt. Temper mustard seeds, curry leaves, and asafoetida resin in ghee. Pour into rasam and switch off heat immediately when froth forms on top.",
+        "safe_internal_temp": None,
+        "version_notes": "Classic digestive soup."
+    },
+    "recipe_sweet_pongal": {
+        "id": "recipe_sweet_pongal",
+        "title": "Temple Style Sakkarai Sweet Pongal",
+        "version": "reformulated-2025",
+        "is_superseded": False,
+        "prep_time_minutes": 10,
+        "cook_time_minutes": 25,
+        "servings": 4,
+        "ingredients": [
+            {"name": "raw rice", "quantity": 200, "unit": "g"},
+            {"name": "yellow split moong dal", "quantity": 50, "unit": "g"},
+            {"name": "dark jaggery syrup", "quantity": 250, "unit": "g"},
+            {"name": "pure dairy ghee", "quantity": 60, "unit": "ml"},
+            {"name": "cashews and raisins", "quantity": 20, "unit": "g"},
+            {"name": "cardamom and edible camphor", "quantity": 0.5, "unit": "tsp"}
+        ],
+        "allergens": ["tree nuts", "dairy"],
+        "may_contain": [],
+        "method": "Dry roast moong dal and pressure cook with rice until mashable. Dissolve jaggery into syrup and strain into the mashed rice-dal. Simmer on low heat while adding ghee. Fry cashews and raisins in hot ghee and stir in with cardamom.",
+        "safe_internal_temp": None,
+        "version_notes": "Festive South Indian harvest pudding."
+    },
+    "recipe_lemon_rice": {
+        "id": "recipe_lemon_rice",
+        "title": "Zesty South Indian Lemon Rice (Elumichai Sadam)",
+        "version": "reformulated-2025",
+        "is_superseded": False,
+        "prep_time_minutes": 10,
+        "cook_time_minutes": 10,
+        "servings": 4,
+        "ingredients": [
+            {"name": "cooked cooled rice", "quantity": 400, "unit": "g"},
+            {"name": "fresh lemon juice", "quantity": 3, "unit": "tbsp"},
+            {"name": "roasted peanuts", "quantity": 2, "unit": "tbsp"},
+            {"name": "mustard seeds, chana dal, urad dal", "quantity": 1, "unit": "tbsp"},
+            {"name": "turmeric powder", "quantity": 0.5, "unit": "tsp"},
+            {"name": "green chilies, ginger, and curry leaves", "quantity": 1, "unit": "tbsp"},
+            {"name": "sesame oil", "quantity": 2, "unit": "tbsp"}
+        ],
+        "allergens": ["peanuts"],
+        "may_contain": [],
+        "method": "Heat sesame oil in pan. Sauté mustard, lentils, peanuts, ginger, chilies, and curry leaves until golden. Add turmeric and remove from heat. Stir in lemon juice and salt. Gently fold into cooled rice until evenly yellow.",
+        "safe_internal_temp": None,
+        "version_notes": "Contains peanuts in traditional tempering."
+    },
+    "recipe_kodi_vepudu": {
+        "id": "recipe_kodi_vepudu",
+        "title": "Andhra Style Kodi Vepudu Chicken Fry",
+        "version": "reformulated-2025",
+        "is_superseded": False,
+        "prep_time_minutes": 15,
+        "cook_time_minutes": 30,
+        "servings": 4,
+        "ingredients": [
+            {"name": "bone-in chicken pieces", "quantity": 600, "unit": "g"},
+            {"name": "sliced onions", "quantity": 2, "unit": "large"},
+            {"name": "roasted Andhra masala powder", "quantity": 2, "unit": "tbsp"},
+            {"name": "ginger garlic paste", "quantity": 1.5, "unit": "tbsp"},
+            {"name": "green chilies and curry leaves", "quantity": 2, "unit": "sprigs"},
+            {"name": "cooking oil", "quantity": 3, "unit": "tbsp"}
+        ],
+        "allergens": [],
+        "may_contain": [],
+        "method": "Sauté onions, chilies, and curry leaves until brown. Add ginger-garlic and chicken. Cook until juices release and evaporate. Sprinkle spicy roasted Andhra spice blend and roast on medium-low until chicken is deeply browned, fragrant, and internal temperature reads 74°C (165°F).",
+        "safe_internal_temp": "74°C (165°F)",
+        "version_notes": "Authentic spicy dry Andhra chicken roast."
+    },
+    "recipe_bisi_bele_bath": {
+        "id": "recipe_bisi_bele_bath",
+        "title": "Karnataka Bisi Bele Bath (Hot Lentil Rice)",
+        "version": "reformulated-2025",
+        "is_superseded": False,
+        "prep_time_minutes": 20,
+        "cook_time_minutes": 35,
+        "servings": 4,
+        "ingredients": [
+            {"name": "sona masoori rice", "quantity": 150, "unit": "g"},
+            {"name": "toor dal (pigeon peas)", "quantity": 100, "unit": "g"},
+            {"name": "diced mixed vegetables (carrot, beans, peas)", "quantity": 200, "unit": "g"},
+            {"name": "freshly roasted BBB spice powder", "quantity": 2.5, "unit": "tbsp"},
+            {"name": "tamarind paste", "quantity": 1, "unit": "tbsp"},
+            {"name": "ghee and cashews for tempering", "quantity": 2, "unit": "tbsp"}
+        ],
+        "allergens": ["tree nuts", "dairy"],
+        "may_contain": [],
+        "method": "Cook rice, toor dal, and vegetables together until tender. Stir in tamarind pulp, salt, and freshly ground BBB masala powder. Simmer for 10 minutes until aromatic and thick. Temper mustard seeds and cashews in hot ghee and pour over the dish.",
+        "safe_internal_temp": None,
+        "version_notes": "Contains cashews and ghee in tempering."
     }
 }
 
@@ -270,14 +451,17 @@ def _build_full_catalog():
 
 _build_full_catalog()
 
+import difflib
+
 # Retrieval Engine over the 600-Recipe Catalog
 def search_recipe_corpus(query: str, version_preference: str = "reformulated-2025") -> List[Dict[str, Any]]:
     """
     RAG retriever over the 600-recipe library.
     Prioritizes matching title and ingredients.
     Always flags version (original vs reformulated-2025).
+    Includes fuzzy matching for culinary spelling variants (e.g. biriyani -> biryani, sambhar -> sambar).
     """
-    stopwords = {"recipe", "recipes", "query", "ingredient", "ingredients", "dish", "make", "cook", "how", "to", "i", "have", "can", "for", "with", "a", "the", "in", "and", "or"}
+    stopwords = {"recipe", "recipes", "query", "ingredient", "ingredients", "dish", "make", "cook", "how", "to", "i", "have", "can", "for", "with", "a", "the", "in", "and", "or", "prepare", "preparation", "give", "me", "show", "tell", "steps", "of", "is", "it"}
     raw_tokens = set(re.findall(r'\w+', query.lower()))
     q_tokens = raw_tokens - stopwords
     if not q_tokens:
@@ -293,7 +477,16 @@ def search_recipe_corpus(query: str, version_preference: str = "reformulated-202
         score = 0
         score += len(q_tokens.intersection(title_tokens)) * 5
         score += len(q_tokens.intersection(ing_tokens)) * 2
-        
+
+        # Fuzzy match for spelling variants (e.g. biriyani vs biryani)
+        for qt in q_tokens:
+            if qt not in title_tokens:
+                for tt in title_tokens:
+                    if len(qt) >= 4 and len(tt) >= 4:
+                        if difflib.SequenceMatcher(None, qt, tt).ratio() >= 0.82:
+                            score += 4.5
+                            break
+            
         # Preference boost for requested version
         if rec["version"] == version_preference:
             score += 1.5
