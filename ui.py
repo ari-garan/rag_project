@@ -423,6 +423,14 @@ class AssistantHTTPHandler(BaseHTTPRequestHandler):
             payload = {}
 
         if self.path == "/api/chat":
+            # Auto-reload corpus so newly added recipes are picked up immediately
+            try:
+                import importlib
+                import corpus
+                importlib.reload(corpus)
+            except Exception:
+                pass
+
             q = payload.get("question", "")
             allergy = payload.get("allergy") or None
             servings = payload.get("servings", 4)
