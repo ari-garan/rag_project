@@ -13,6 +13,13 @@ import urllib.parse
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import webbrowser
 
+# Ensure UTF-8 output on Windows consoles
+try:
+    if hasattr(sys.stdout, 'reconfigure'):
+        sys.stdout.reconfigure(encoding='utf-8')
+except Exception:
+    pass
+
 # Ensure week12 is in Python path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "week12"))
 from pantry_assistant import PantryAssistant
@@ -133,7 +140,7 @@ HTML_PAGE = """<!DOCTYPE html>
     <!-- Dietary Constraints -->
     <div class="panel-section">
       <div class="panel-label">Declared Allergies (PII Protected)</div>
-      <input type="text" id="allergyInput" class="input-field" placeholder="e.g. nuts, dairy, gluten, fish" value="nuts">
+      <input type="text" id="allergyInput" class="input-field" placeholder="e.g. nuts, dairy, gluten, fish" value="">
     </div>
 
     <div class="panel-section">
@@ -490,7 +497,7 @@ def run_server(port: int = 8000, open_browser: bool = True):
     httpd = HTTPServer(server_address, AssistantHTTPHandler)
     url = f"http://127.0.0.1:{port}"
     print("=" * 65)
-    print(f"🍳 Pantry-to-Plate Web UI running at: {url}")
+    print(f"[Pantry-to-Plate] Web UI running at: {url}")
     print("Press Ctrl+C to stop the server.")
     print("=" * 65)
     
