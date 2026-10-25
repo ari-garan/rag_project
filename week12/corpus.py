@@ -659,6 +659,116 @@ RECIPE_DATABASE: Dict[str, Dict[str, Any]] = {
         "method": "Sauté shallots, garlic, and green chilies in sesame oil. Add chili and coriander powder with tamarind water. Bring to a boil. Gently slide in fish pieces. Simmer on low heat for 12 minutes until fish is cooked through and registers internal temperature of 63°C (145°F). Finish with roasted methi powder.",
         "safe_internal_temp": "63°C (145°F)",
         "version_notes": "Authentic spicy tamarind Andhra fish curry. Enforces 63°C fish safety rule."
+    },
+    "recipe_classic_beef_burger": {
+        "id": "recipe_classic_beef_burger",
+        "title": "Classic Test Kitchen Smash Burger",
+        "version": "reformulated-2025",
+        "is_superseded": False,
+        "prep_time_minutes": 15,
+        "cook_time_minutes": 10,
+        "servings": 4,
+        "ingredients": [
+            {"name": "ground beef patties (80/20 blend)", "quantity": 600, "unit": "g"},
+            {"name": "brioche burger buns", "quantity": 4, "unit": "whole"},
+            {"name": "cheddar cheese slices", "quantity": 4, "unit": "slices"},
+            {"name": "crisp lettuce and tomato slices", "quantity": 4, "unit": "leaves"},
+            {"name": "burger sauce (mayo, relish, mustard)", "quantity": 4, "unit": "tbsp"},
+            {"name": "salt and coarse black pepper", "quantity": 1, "unit": "tsp"},
+            {"name": "butter for toasting buns", "quantity": 1, "unit": "tbsp"}
+        ],
+        "allergens": ["gluten", "dairy", "eggs"],
+        "may_contain": [],
+        "method": "Divide ground beef into four 150g balls. Heat cast iron skillet until smoking hot. Smash patties thin with heavy spatula, season with salt and pepper. Sear for 2.5 minutes until deep crust forms, flip, add cheese, and cook until internal temperature registers 71°C (160°F) for ground meat safety. Toast buns in butter, spread sauce, assemble with lettuce, tomato, and patty.",
+        "safe_internal_temp": "71°C (160°F)",
+        "version_notes": "Test kitchen double-crust smash burger. Enforces 71°C ground meat food safety."
+    },
+    "recipe_crispy_chicken_burger": {
+        "id": "recipe_crispy_chicken_burger",
+        "title": "Crispy Buttermilk Chicken Burger",
+        "version": "reformulated-2025",
+        "is_superseded": False,
+        "prep_time_minutes": 20,
+        "cook_time_minutes": 15,
+        "servings": 4,
+        "ingredients": [
+            {"name": "boneless chicken thighs", "quantity": 500, "unit": "g"},
+            {"name": "buttermilk marinade", "quantity": 200, "unit": "ml"},
+            {"name": "seasoned flour coating", "quantity": 150, "unit": "g"},
+            {"name": "brioche burger buns", "quantity": 4, "unit": "whole"},
+            {"name": "spicy mayo and dill pickles", "quantity": 4, "unit": "tbsp"},
+            {"name": "frying oil", "quantity": 500, "unit": "ml"}
+        ],
+        "allergens": ["gluten", "dairy"],
+        "may_contain": [],
+        "method": "Marinate chicken in spiced buttermilk. Dredge in seasoned flour, pressing for flaky crust. Deep-fry at 175°C (350°F) for 6-8 minutes until golden brown and internal temperature reaches 74°C (165°F) for poultry food safety. Serve on toasted brioche buns with spicy mayo and pickles.",
+        "safe_internal_temp": "74°C (165°F)",
+        "version_notes": "Enforces 74°C poultry safe internal temperature rule."
+    },
+    "recipe_veggie_burger": {
+        "id": "recipe_veggie_burger",
+        "title": "Smoky Black Bean and Quinoa Veggie Burger",
+        "version": "reformulated-2025",
+        "is_superseded": False,
+        "prep_time_minutes": 20,
+        "cook_time_minutes": 15,
+        "servings": 4,
+        "ingredients": [
+            {"name": "cooked black beans mashed", "quantity": 300, "unit": "g"},
+            {"name": "cooked quinoa", "quantity": 150, "unit": "g"},
+            {"name": "smoked paprika and ground cumin", "quantity": 1.5, "unit": "tsp"},
+            {"name": "whole grain burger buns", "quantity": 4, "unit": "whole"},
+            {"name": "avocado slices and red onion", "quantity": 1, "unit": "medium"},
+            {"name": "olive oil", "quantity": 2, "unit": "tbsp"}
+        ],
+        "allergens": ["gluten"],
+        "may_contain": [],
+        "method": "Mix mashed black beans with cooked quinoa, smoked paprika, cumin, and sea salt. Form into 4 firm patties. Pan-sear in olive oil for 4-5 minutes per side until crisp exterior forms. Assemble on toasted whole grain buns with sliced avocado and red onion. Vegan, nut-free, dairy-free.",
+        "safe_internal_temp": None,
+        "version_notes": "Nut-free, vegan plant-based burger."
+    },
+    "recipe_margherita_pizza": {
+        "id": "recipe_margherita_pizza",
+        "title": "Classic Artisan Margherita Pizza",
+        "version": "reformulated-2025",
+        "is_superseded": False,
+        "prep_time_minutes": 20,
+        "cook_time_minutes": 12,
+        "servings": 4,
+        "ingredients": [
+            {"name": "fermented pizza dough", "quantity": 400, "unit": "g"},
+            {"name": "crushed San Marzano tomatoes", "quantity": 150, "unit": "g"},
+            {"name": "fresh mozzarella cheese", "quantity": 200, "unit": "g"},
+            {"name": "fresh basil leaves", "quantity": 10, "unit": "leaves"},
+            {"name": "extra virgin olive oil", "quantity": 1, "unit": "tbsp"}
+        ],
+        "allergens": ["gluten", "dairy"],
+        "may_contain": [],
+        "method": "Stretch pizza dough into 12-inch round. Spread crushed tomatoes, scatter fresh mozzarella cubes, and drizzle extra virgin olive oil. Bake at 250°C (485°F) on preheated pizza stone for 8-10 minutes until crust is blistered and cheese bubbles. Top with fresh basil leaves.",
+        "safe_internal_temp": None,
+        "version_notes": "Artisan wood-fired style pizza. Contains gluten and dairy."
+    },
+    "recipe_creamy_pasta": {
+        "id": "recipe_creamy_pasta",
+        "title": "Creamy Garlic Parmesan Penne Pasta",
+        "version": "reformulated-2025",
+        "is_superseded": False,
+        "prep_time_minutes": 10,
+        "cook_time_minutes": 15,
+        "servings": 4,
+        "ingredients": [
+            {"name": "penne pasta", "quantity": 350, "unit": "g"},
+            {"name": "heavy cooking cream", "quantity": 200, "unit": "ml"},
+            {"name": "grated parmesan cheese", "quantity": 80, "unit": "g"},
+            {"name": "minced garlic", "quantity": 4, "unit": "cloves"},
+            {"name": "butter and olive oil", "quantity": 2, "unit": "tbsp"},
+            {"name": "fresh parsley and black pepper", "quantity": 1, "unit": "tbsp"}
+        ],
+        "allergens": ["gluten", "dairy"],
+        "may_contain": [],
+        "method": "Boil penne in salted water until al dente. In a skillet, gently sauté minced garlic in butter and olive oil until fragrant. Pour in heavy cream and simmer for 3 minutes. Stir in grated parmesan until melted into silky sauce. Toss hot pasta in sauce with cracked black pepper and fresh parsley.",
+        "safe_internal_temp": None,
+        "version_notes": "Classic Italian-American skillet pasta. Nut-free, contains gluten and dairy."
     }
 }
 
