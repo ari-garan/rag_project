@@ -367,6 +367,96 @@ RECIPE_DATABASE: Dict[str, Dict[str, Any]] = {
         "method": "Cook rice, toor dal, and vegetables together until tender. Stir in tamarind pulp, salt, and freshly ground BBB masala powder. Simmer for 10 minutes until aromatic and thick. Temper mustard seeds and cashews in hot ghee and pour over the dish.",
         "safe_internal_temp": None,
         "version_notes": "Contains cashews and ghee in tempering."
+    },
+    "recipe_curd_rice": {
+        "id": "recipe_curd_rice",
+        "title": "Traditional South Indian Curd Rice (Thayir Sadam)",
+        "version": "reformulated-2025",
+        "is_superseded": False,
+        "prep_time_minutes": 10,
+        "cook_time_minutes": 15,
+        "servings": 4,
+        "ingredients": [
+            {"name": "cooked soft rice (slightly mashed)", "quantity": 400, "unit": "g"},
+            {"name": "fresh plain yogurt (curd)", "quantity": 300, "unit": "g"},
+            {"name": "warm milk", "quantity": 100, "unit": "ml"},
+            {"name": "mustard seeds", "quantity": 1, "unit": "tsp"},
+            {"name": "urad dal", "quantity": 1, "unit": "tsp"},
+            {"name": "green chilies and finely chopped ginger", "quantity": 1, "unit": "tbsp"},
+            {"name": "curry leaves and fresh coriander", "quantity": 1, "unit": "sprig"},
+            {"name": "pomegranate arils or seedless green grapes", "quantity": 2, "unit": "tbsp"},
+            {"name": "sesame oil or ghee for tempering", "quantity": 1, "unit": "tbsp"}
+        ],
+        "allergens": ["dairy"],
+        "may_contain": [],
+        "method": "Mash warm cooked rice softly. Fold in fresh curd, warm milk, and salt until creamy and soothing. Heat oil in a small pan, crackle mustard seeds, urad dal, ginger, green chilies, and curry leaves. Pour hot tadka over the curd rice. Garnish with fresh coriander and pomegranate arils. Nut-free.",
+        "safe_internal_temp": None,
+        "version_notes": "Traditional comforting South Indian curd rice (thayir sadam / daddojanam). Naturally nut-free, contains dairy."
+    },
+    "recipe_south_indian_sambar": {
+        "id": "recipe_south_indian_sambar",
+        "title": "Authentic South Indian Drumstick Sambar",
+        "version": "reformulated-2025",
+        "is_superseded": False,
+        "prep_time_minutes": 15,
+        "cook_time_minutes": 25,
+        "servings": 4,
+        "ingredients": [
+            {"name": "toor dal (split pigeon peas)", "quantity": 150, "unit": "g"},
+            {"name": "drumstick pieces and shallots", "quantity": 200, "unit": "g"},
+            {"name": "sambar powder", "quantity": 2, "unit": "tbsp"},
+            {"name": "tamarind extract", "quantity": 2, "unit": "tbsp"},
+            {"name": "tomatoes", "quantity": 2, "unit": "medium"},
+            {"name": "mustard seeds and curry leaves", "quantity": 1, "unit": "tsp"},
+            {"name": "sesame oil", "quantity": 1, "unit": "tbsp"}
+        ],
+        "allergens": [],
+        "may_contain": [],
+        "method": "Pressure cook toor dal until soft. Boil drumstick and shallots with tamarind water, tomatoes, turmeric, and sambar powder. Add cooked mashed dal and simmer for 8 minutes. Temper mustard seeds and curry leaves in sesame oil and pour over sambar.",
+        "safe_internal_temp": None,
+        "version_notes": "Classic South Indian lentil vegetable stew. Naturally vegan, gluten-free, nut-free."
+    },
+    "recipe_coconut_chutney": {
+        "id": "recipe_coconut_chutney",
+        "title": "Fresh South Indian Coconut Chutney",
+        "version": "reformulated-2025",
+        "is_superseded": False,
+        "prep_time_minutes": 10,
+        "cook_time_minutes": 5,
+        "servings": 4,
+        "ingredients": [
+            {"name": "freshly grated coconut", "quantity": 150, "unit": "g"},
+            {"name": "roasted gram (chana dal)", "quantity": 30, "unit": "g"},
+            {"name": "green chilies", "quantity": 2, "unit": "pieces"},
+            {"name": "fresh ginger", "quantity": 0.5, "unit": "inch"},
+            {"name": "mustard seeds and curry leaves", "quantity": 1, "unit": "tsp"},
+            {"name": "coconut oil", "quantity": 1, "unit": "tbsp"}
+        ],
+        "allergens": [],
+        "may_contain": [],
+        "method": "Blend coconut, roasted gram, chilies, ginger, salt, and minimal water into a smooth paste. Heat coconut oil, crackle mustard seeds, urad dal, and curry leaves. Pour over the chutney.",
+        "safe_internal_temp": None,
+        "version_notes": "Traditional tiffin accompaniment for idli and dosa. Vegan and nut-free."
+    },
+    "recipe_steamed_idli": {
+        "id": "recipe_steamed_idli",
+        "title": "Soft Steamed South Indian Idlis",
+        "version": "reformulated-2025",
+        "is_superseded": False,
+        "prep_time_minutes": 15,
+        "cook_time_minutes": 12,
+        "servings": 4,
+        "ingredients": [
+            {"name": "idli rice", "quantity": 300, "unit": "g"},
+            {"name": "whole white urad dal", "quantity": 100, "unit": "g"},
+            {"name": "fenugreek seeds", "quantity": 0.5, "unit": "tsp"},
+            {"name": "rock salt", "quantity": 1, "unit": "tsp"}
+        ],
+        "allergens": [],
+        "may_contain": [],
+        "method": "Soak rice and urad dal separately. Grind urad dal until fluffy and light, and rice until fine rava texture. Mix, add salt, and ferment for 8 to 12 hours. Grease idli plates, pour fermented batter, and steam for 10-12 minutes until soft and pillowy.",
+        "safe_internal_temp": None,
+        "version_notes": "Steamed fermented rice-lentil cakes. Vegan, gluten-free, nut-free."
     }
 }
 
