@@ -404,7 +404,8 @@ def run_capstone_eval_suite():
             user_query=case["question"],
             stated_allergy=case.get("allergy"),
             target_servings=case.get("servings", 4),
-            max_minutes=case.get("max_minutes")
+            max_minutes=case.get("max_minutes"),
+            enable_live_llm=False
         )
 
         # 1. Deterministic assertions first

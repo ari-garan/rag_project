@@ -14,6 +14,13 @@ import os
 import argparse
 import time
 
+# Ensure UTF-8 output on Windows console
+try:
+    if hasattr(sys.stdout, 'reconfigure'):
+        sys.stdout.reconfigure(encoding='utf-8')
+except Exception:
+    pass
+
 # Add week12 to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "week12"))
 from pantry_assistant import PantryAssistant

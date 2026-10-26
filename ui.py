@@ -153,6 +153,14 @@ HTML_PAGE = """<!DOCTYPE html>
       <input type="number" id="minutesInput" class="input-field" placeholder="e.g. 30" min="5">
     </div>
 
+    <div class="panel-section">
+      <div class="panel-label">Generation Engine</div>
+      <label style="display:flex; align-items:center; gap:8px; font-size:12px; color:#e2e8f0; cursor:pointer;">
+        <input type="checkbox" id="liveModelToggle" checked style="accent-color: var(--accent); width:16px; height:16px;">
+        <span>✨ <strong>Live AI Model (Qwen on Groq)</strong></span>
+      </label>
+    </div>
+
     <!-- Quick Scenarios -->
     <div class="panel-section">
       <div class="panel-label">Test Kitchen Presets</div>
@@ -272,6 +280,9 @@ Try typing what's in your pantry or click any of the <strong>Test Kitchen Preset
       sendBtn.innerText = 'Thinking...';
 
       try {
+        const liveModelToggle = document.getElementById('liveModelToggle');
+        const enableLiveLLM = liveModelToggle ? liveModelToggle.checked : true;
+
         const resp = await fetch('/api/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -279,7 +290,8 @@ Try typing what's in your pantry or click any of the <strong>Test Kitchen Preset
             question: question,
             allergy: allergy,
             servings: servings,
-            max_minutes: maxMinutes
+            max_minutes: maxMinutes,
+            enable_live_llm: enableLiveLLM
           })
         });
         const data = await resp.json();
@@ -430,24 +442,29 @@ class AssistantHTTPHandler(BaseHTTPRequestHandler):
             payload = {}
 
         if self.path == "/api/chat":
-            # Auto-reload corpus so newly added recipes are picked up immediately
+            # Auto-reload modules so newly added recipes and engine updates are picked up immediately
             try:
                 import importlib
                 import corpus
+                import pantry_assistant
                 importlib.reload(corpus)
+                importlib.reload(pantry_assistant)
+                active_assistant = pantry_assistant.PantryAssistant(config_path=os.path.join(os.path.dirname(__file__), "week12", "mcp_config.json"))
             except Exception:
-                pass
+                active_assistant = assistant
 
             q = payload.get("question", "")
             allergy = payload.get("allergy") or None
             servings = payload.get("servings", 4)
             max_minutes = payload.get("max_minutes") or None
+            enable_live_llm = payload.get("enable_live_llm", True)
 
-            res = assistant.answer_query(
+            res = active_assistant.answer_query(
                 user_query=q,
                 stated_allergy=allergy,
                 target_servings=int(servings) if servings else 4,
-                max_minutes=int(max_minutes) if max_minutes else None
+                max_minutes=int(max_minutes) if max_minutes else None,
+                enable_live_llm=bool(enable_live_llm)
             )
 
             self.send_response(200)
