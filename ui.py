@@ -210,8 +210,11 @@ HTML_PAGE = """<!DOCTYPE html>
         <div class="status-dot"></div>
         <span>Integrated Assistant: RAG + Agent + MCP Server Live</span>
       </div>
-      <div style="font-size: 12px; color: var(--text-muted); font-family: monospace;">
-        Version Citation Enforced • 600 Recipes • PII Anonymized
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="font-size: 12px; color: var(--text-muted); font-family: monospace;">
+          Version Citation Enforced • Conversational History Active
+        </div>
+        <button onclick="clearChatHistory()" style="background:#334155; border:1px solid var(--card-border); color:#e2e8f0; font-size:11px; padding:4px 10px; border-radius:6px; cursor:pointer;" title="Reset conversation and start fresh">🧹 New Chat</button>
       </div>
     </div>
 
@@ -256,6 +259,20 @@ Try typing what's in your pantry or click any of the <strong>Test Kitchen Preset
     const modalTitle = document.getElementById('modalTitle');
     const modalBody = document.getElementById('modalBody');
 
+    // Conversational History State
+    let conversationHistory = [];
+
+    function clearChatHistory() {
+      conversationHistory = [];
+      chatHistory.innerHTML = `
+        <div class="message assistant">
+          <div class="bubble success-card">
+            Cleared conversation history! Started a new chat. What would you like to cook?
+          </div>
+        </div>
+      `;
+    }
+
     function applyPreset(query, allergy, servings, minutes) {
       chatInput.value = query;
       allergyInput.value = allergy;
@@ -288,6 +305,7 @@ Try typing what's in your pantry or click any of the <strong>Test Kitchen Preset
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             question: question,
+            history: conversationHistory,
             allergy: allergy,
             servings: servings,
             max_minutes: maxMinutes,
@@ -296,6 +314,17 @@ Try typing what's in your pantry or click any of the <strong>Test Kitchen Preset
         });
         const data = await resp.json();
         appendMessage('assistant', data.answer, data);
+
+        // Track multi-turn conversation turns
+        conversationHistory.push({ role: 'user', content: question });
+        conversationHistory.push({
+          role: 'assistant',
+          content: data.answer,
+          recipe_id: data.recipe_id || null,
+          recipe_title: data.recipe_title || null,
+          citation: data.citation || null,
+          allergy: allergy
+        });
       } catch (err) {
         appendMessage('assistant', 'Error communicating with assistant server: ' + err.message, null);
       } finally {
@@ -454,6 +483,7 @@ class AssistantHTTPHandler(BaseHTTPRequestHandler):
                 active_assistant = assistant
 
             q = payload.get("question", "")
+            history = payload.get("history", [])
             allergy = payload.get("allergy") or None
             servings = payload.get("servings", 4)
             max_minutes = payload.get("max_minutes") or None
@@ -461,6 +491,7 @@ class AssistantHTTPHandler(BaseHTTPRequestHandler):
 
             res = active_assistant.answer_query(
                 user_query=q,
+                history=history,
                 stated_allergy=allergy,
                 target_servings=int(servings) if servings else 4,
                 max_minutes=int(max_minutes) if max_minutes else None,

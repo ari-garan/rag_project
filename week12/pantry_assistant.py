@@ -109,13 +109,107 @@ class PantryAssistant:
         salt = "kitchen_pii_salt_2026"
         return "sha256:" + hashlib.sha256(f"{salt}_{allergy_str.lower().strip()}".encode()).hexdigest()[:12]
 
+    def _extract_last_recipe_from_history(self, history: Optional[List[Dict[str, Any]]]) -> Optional[Dict[str, Any]]:
+        """
+        Extracts the most recently active recipe entity from prior conversation history.
+        """
+        if not history:
+            return None
+        for turn in reversed(history):
+            if turn.get("role") == "assistant":
+                # Check direct recipe_id key
+                rec_id = turn.get("recipe_id")
+                if rec_id and rec_id in corpus.RECIPE_DATABASE:
+                    return corpus.RECIPE_DATABASE[rec_id]
+                
+                # Check citation tag in content: [recipe_id#version=...]
+                content = turn.get("content", "")
+                m = re.search(r"\[(recipe_[a-zA-Z0-9_]+)#version=([^\]]+)\]", content)
+                if m:
+                    extracted_id = m.group(1)
+                    if extracted_id in corpus.RECIPE_DATABASE:
+                        return corpus.RECIPE_DATABASE[extracted_id]
+        return None
+
+    def _extract_last_allergy_from_history(self, history: Optional[List[Dict[str, Any]]]) -> Optional[str]:
+        """
+        Extracts user's active dietary allergy from previous conversation turns.
+        """
+        if not history:
+            return None
+        for turn in reversed(history):
+            if turn.get("allergy"):
+                return turn.get("allergy")
+        return None
+
+    def _detect_conversational_followup(self, user_query: str, last_recipe: Optional[Dict[str, Any]]) -> Tuple[bool, Optional[int], Optional[str]]:
+        """
+        Determines if user_query refers to last_recipe via pronouns, operational keywords, or short queries.
+        Returns: (is_followup, extracted_servings, extracted_allergy)
+        """
+        if not last_recipe:
+            return False, None, None
+
+        q = user_query.strip().lower()
+
+        # Pronoun & back-reference patterns
+        pronoun_patterns = [
+            r"\b(it|this|that|them|these)\b",
+            r"\b(the|this|that|same)\s+(recipe|dish|meal|food|instructions)\b",
+            r"\b(for\s+this|for\s+that|in\s+this|in\s+that|with\s+this|with\s+that|of\s+this|of\s+that)\b",
+        ]
+        has_pronoun = any(re.search(pat, q) for pat in pronoun_patterns)
+
+        # Conversational follow-up actions
+        action_keywords = [
+            "scale", "double", "triple", "halve", "servings", "serving", "people",
+            "substitute", "substitution", "replace", "swap", "instead of",
+            "allergy", "allergies", "allergic", "safe for", "contain", "gluten", "dairy", "nuts",
+            "temperature", "temp", "internal temp", "how long", "bake time", "cook time"
+        ]
+        has_action = any(kw in q for kw in action_keywords)
+
+        words = q.split()
+        is_short_followup = len(words) <= 12 and (has_pronoun or has_action)
+
+        # Check if user named another distinct dish explicitly (e.g. "How to make pizza instead")
+        other_dishes = ["pizza", "biryani", "dal", "pasta", "cookie", "soup", "salad", "cake", "burger", "tacos", "curry", "noodles", "shortbread", "chicken"]
+        names_other_dish = any(d in q for d in other_dishes if d not in last_recipe["title"].lower())
+
+        if names_other_dish and not has_pronoun:
+            return False, None, None
+
+        is_followup = has_pronoun or is_short_followup
+
+        # Extract dynamic servings if mentioned in query (e.g. "scale to 8 people", "for 6", "double it")
+        extracted_servings = None
+        scale_match = re.search(r"\b(?:for|to|make)\s+(\d+)\s*(?:people|servings|guests|portions)?\b", q)
+        if scale_match:
+            extracted_servings = int(scale_match.group(1))
+        elif re.search(r"\bdouble\b", q):
+            extracted_servings = last_recipe.get("servings", 4) * 2
+        elif re.search(r"\btriple\b", q):
+            extracted_servings = last_recipe.get("servings", 4) * 3
+        elif re.search(r"\bhalve\b", q):
+            extracted_servings = max(1, last_recipe.get("servings", 4) // 2)
+
+        # Extract allergy inquiry if mentioned in query (e.g. "is there any peanut risk", "safe for gluten allergy?")
+        extracted_allergy = None
+        for a in ["nuts", "peanuts", "tree nuts", "dairy", "gluten", "egg", "fish", "shellfish", "soy"]:
+            if a in q:
+                extracted_allergy = a
+                break
+
+        return is_followup, extracted_servings, extracted_allergy
+
     def _call_groq_llm(self, user_query: str, recipe_title: str, citation: str, 
                        target_servings: int, ingredients_block: str, 
                        method_text: str, temp_note: str, cook_time_note: str,
-                       substitution_note: str) -> Optional[Tuple[str, float]]:
+                       substitution_note: str,
+                       history: Optional[List[Dict[str, Any]]] = None) -> Optional[Tuple[str, float]]:
         """
         Live Model Synthesis using Qwen on Groq.
-        Produces fluid, human-like, conversational chef answers from grounded recipe context.
+        Produces fluid, human-like, conversational chef answers while preserving conversation context.
         """
         groq_key = os.environ.get("GROQ_API_KEY")
         if not groq_key:
@@ -147,12 +241,30 @@ MANDATORY RULES:
 4. Provide step-by-step cooking instructions with 2 pro chef tips.
 5. Keep the tone warm, conversational, encouraging, and authoritative."""
 
+        messages = [
+            {
+                "role": "system",
+                "content": "You are an expert test-kitchen chef assistant. You answer user queries by referencing previous conversation context when applicable while strictly grounding recipe facts in verified test-kitchen data."
+            }
+        ]
+
+        if history:
+            for h in history[-4:]:
+                r = h.get("role")
+                c = h.get("content", "")
+                if r in ("user", "assistant") and c:
+                    if r == "assistant" and len(c) > 400:
+                        c = c[:400] + "... [recipe citation provided]"
+                    messages.append({"role": r, "content": c})
+
+        messages.append({"role": "user", "content": prompt})
+
         t0 = time.perf_counter()
         try:
             import urllib.request, json
             data = {
                 "model": "qwen/qwen3.8-27b",
-                "messages": [{"role": "user", "content": prompt}],
+                "messages": messages,
                 "temperature": 0.3
             }
             req = urllib.request.Request(
@@ -172,44 +284,79 @@ MANDATORY RULES:
         except Exception:
             return None
 
-    def answer_query(self, user_query: str, stated_allergy: Optional[str] = None, 
+    def answer_query(self, user_query: str, 
+                     history: Optional[List[Dict[str, Any]]] = None,
+                     stated_allergy: Optional[str] = None, 
                      target_servings: int = 4, max_minutes: Optional[int] = None,
                      version_preference: str = "reformulated-2025",
                      enable_downstream_substitution_check: bool = True,
                      enable_live_llm: bool = True) -> Dict[str, Any]:
         """
         Single entry point executing the integrated RAG + Agent + MCP loop.
+        Supports multi-turn conversational history and anaphora/reference resolution.
         """
         trace_id = f"trace_w12_{uuid.uuid4().hex[:8]}"
         start_time = time.perf_counter()
         spans = []
 
+        # Check active allergy from history if not explicitly provided
+        if not stated_allergy:
+            prior_allergy = self._extract_last_allergy_from_history(history)
+            if prior_allergy:
+                stated_allergy = prior_allergy
+
         # PII Anonymization for Health Data
         health_token = self._anonymize_pii_health_data(stated_allergy)
 
         # -------------------------------------------------------------
-        # SPAN 1: RAG Retrieval over 600-Recipe Library
+        # REFERENCE RESOLUTION: Check if query refers to prior recipe
         # -------------------------------------------------------------
-        span1_start = time.perf_counter()
-        recipes_found, span1_lat = self._call_mcp_tool(
-            "search_recipe_library", 
-            {"query": user_query, "version_preference": version_preference}, 
-            trace_id
-        )
-        spans.append({
-            "name": "retrieval_rag",
-            "latency_ms": round(span1_lat, 2),
-            "tokens": 420,
-            "cost_usd": 0.00042,
-            "tool_called": "search_recipe_library"
-        })
+        last_recipe = self._extract_last_recipe_from_history(history)
+        is_followup, extracted_servings, extracted_allergy = self._detect_conversational_followup(user_query, last_recipe)
 
-        if not recipes_found:
-            total_lat = (time.perf_counter() - start_time) * 1000
-            ans = "I could not find any recipe in our verified 600-recipe test kitchen matching your ingredients. Refusing to guess."
-            return self._build_result(trace_id, user_query, ans, total_lat, spans, health_token, status="REFUSAL_NOT_FOUND")
+        if extracted_servings and target_servings == 4:
+            target_servings = extracted_servings
+        if extracted_allergy and not stated_allergy:
+            stated_allergy = extracted_allergy
+            health_token = self._anonymize_pii_health_data(stated_allergy)
 
-        selected_recipe = recipes_found[0]
+        selected_recipe = None
+        if is_followup and last_recipe:
+            selected_recipe = last_recipe
+            spans.append({
+                "name": "conversational_reference_resolved",
+                "resolved_recipe": last_recipe["title"],
+                "recipe_id": last_recipe["id"],
+                "latency_ms": 1.2,
+                "tokens": 45,
+                "cost_usd": 0.00002,
+                "tool_called": "history_entity_resolver"
+            })
+        else:
+            # -------------------------------------------------------------
+            # SPAN 1: RAG Retrieval over 600-Recipe Library
+            # -------------------------------------------------------------
+            span1_start = time.perf_counter()
+            recipes_found, span1_lat = self._call_mcp_tool(
+                "search_recipe_library", 
+                {"query": user_query, "version_preference": version_preference}, 
+                trace_id
+            )
+            spans.append({
+                "name": "retrieval_rag",
+                "latency_ms": round(span1_lat, 2),
+                "tokens": 420,
+                "cost_usd": 0.00042,
+                "tool_called": "search_recipe_library"
+            })
+
+            if not recipes_found:
+                total_lat = (time.perf_counter() - start_time) * 1000
+                ans = "I could not find any recipe in our verified 600-recipe test kitchen matching your ingredients. Refusing to guess."
+                return self._build_result(trace_id, user_query, ans, total_lat, spans, health_token, status="REFUSAL_NOT_FOUND")
+
+            selected_recipe = recipes_found[0]
+
         recipe_id = selected_recipe["id"]
         recipe_title = selected_recipe["title"]
         recipe_version = selected_recipe["version"]
@@ -219,7 +366,9 @@ MANDATORY RULES:
         if max_minutes and prep_cook_time > max_minutes:
             total_lat = (time.perf_counter() - start_time) * 1000
             ans = f"Refusal: '{recipe_title}' requires {prep_cook_time} minutes total, exceeding your {max_minutes}-minute limit. Refusing to alter cooking steps."
-            return self._build_result(trace_id, user_query, ans, total_lat, spans, health_token, status="REFUSAL_TIME_EXCEEDED")
+            return self._build_result(trace_id, user_query, ans, total_lat, spans, health_token, 
+                                      recipe_id=recipe_id, recipe_title=recipe_title, recipe_version=recipe_version,
+                                      status="REFUSAL_TIME_EXCEEDED")
 
         # -------------------------------------------------------------
         # SPAN 2: Exact-Match Allergen Declaration Check
@@ -266,6 +415,7 @@ MANDATORY RULES:
                 f"Notice: This recipe uses the '{recipe_version}' specification. Refusing to recommend an allergen hazard."
             )
             return self._build_result(trace_id, user_query, ans, total_lat, spans, health_token, 
+                                      recipe_id=recipe_id, recipe_title=recipe_title, recipe_version=recipe_version,
                                       citation=citation, status="REFUSAL_ALLERGEN_UNSAFE")
 
         # -------------------------------------------------------------
@@ -339,7 +489,9 @@ MANDATORY RULES:
                             f"SAFETY REFUSAL: Proposed substitution '{sub_name}' introduces UNSAFE allergen '{', '.join(sub_allergens)}', "
                             f"which violates your stated allergy '{stated_allergy}'. Refusing substitution."
                         )
-                        return self._build_result(trace_id, user_query, ans, total_lat, spans, health_token, status="REFUSAL_ALLERGEN_UNSAFE")
+                        return self._build_result(trace_id, user_query, ans, total_lat, spans, health_token, 
+                                                  recipe_id=recipe_id, recipe_title=recipe_title, recipe_version=recipe_version,
+                                                  status="REFUSAL_ALLERGEN_UNSAFE")
                         
                 substitution_applied = f"Substituted butter with {sub_name}."
 
@@ -368,7 +520,8 @@ MANDATORY RULES:
                 method_text=selected_recipe["method"],
                 temp_note=temp_note,
                 cook_time_note=scaled_data.get("cook_time_note", ""),
-                substitution_note=sub_text
+                substitution_note=sub_text,
+                history=history
             )
             if res_tuple:
                 llm_answer, llm_lat = res_tuple
@@ -403,10 +556,14 @@ MANDATORY RULES:
 
         total_lat = (time.perf_counter() - start_time) * 1000
         return self._build_result(trace_id, user_query, final_answer, total_lat, spans, health_token, 
+                                  recipe_id=recipe_id, recipe_title=recipe_title, recipe_version=recipe_version,
                                   citation=citation, status="SUCCESS")
 
     def _build_result(self, trace_id: str, query: str, answer: str, total_lat: float, 
                       spans: List[Dict[str, Any]], health_token: str, 
+                      recipe_id: Optional[str] = None,
+                      recipe_title: Optional[str] = None,
+                      recipe_version: Optional[str] = None,
                       citation: Optional[str] = None, status: str = "SUCCESS") -> Dict[str, Any]:
         """
         Structures output and logs per-request trace to disk.
@@ -419,6 +576,9 @@ MANDATORY RULES:
             "timestamp_utc": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
             "question": query,
             "health_data_hash": health_token,  # PII Protection!
+            "recipe_id": recipe_id,
+            "recipe_title": recipe_title,
+            "recipe_version": recipe_version,
             "citation": citation,
             "status": status,
             "total_latency_ms": round(total_lat, 2),
@@ -427,6 +587,15 @@ MANDATORY RULES:
             "spans": spans,
             "answer": answer
         }
+
+        # Persist trace
+        try:
+            with open(self.log_file, "a", encoding="utf-8") as f:
+                f.write(json.dumps(trace_record) + "\n")
+        except Exception:
+            pass
+
+        return trace_record
 
         # Persist trace
         try:

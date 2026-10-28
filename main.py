@@ -132,9 +132,11 @@ def main():
     print("=" * 65)
     print("Pantry-to-Plate Assistant (Week 12 Capstone)")
     print("Type your cooking/pantry question. Type 'exit' to quit.")
+    print("Conversational memory active: you can ask follow-ups referencing 'it', 'this', scaling, or substitutions.")
     print("To launch the web UI, run: python main.py --ui")
     print("=" * 65)
     
+    history = []
     while True:
         try:
             q = input("\nYour Cooking Question: ").strip()
@@ -145,10 +147,21 @@ def main():
             servings_str = input("How many servings? (default 4): ").strip()
             servings = int(servings_str) if servings_str.isdigit() else 4
 
-            res = assistant.answer_query(q, stated_allergy=allergy, target_servings=servings)
+            res = assistant.answer_query(q, history=history, stated_allergy=allergy, target_servings=servings)
             print("\n--- ANSWER ---")
             print(res["answer"])
             print(f"\n[Trace ID: {res['trace_id']} | Latency: {res['total_latency_ms']}ms | Cost: ${res['total_cost_usd']}]")
+
+            # Track conversation history
+            history.append({"role": "user", "content": q})
+            history.append({
+                "role": "assistant",
+                "content": res["answer"],
+                "recipe_id": res.get("recipe_id"),
+                "recipe_title": res.get("recipe_title"),
+                "citation": res.get("citation"),
+                "allergy": allergy
+            })
         except KeyboardInterrupt:
             print("\nExiting...")
             break
